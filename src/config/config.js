@@ -1,6 +1,7 @@
 const dotenv = require('dotenv');
 const path = require('path');
 const Joi = require('joi');
+const { Client } = require('elasticsearch');
 
 dotenv.config({ path: path.join(__dirname, '../../.env') });
 
@@ -8,6 +9,7 @@ const envVarsSchema = Joi.object()
   .keys({
     NODE_ENV: Joi.string().valid('production', 'development', 'test').required(),
     PORT: Joi.number().default(3000),
+    ELASTICSEARCH_HOST: Joi.string().default('http://es01:9200'),
     MONGODB_URL: Joi.string().required().description('Mongo DB url'),
     JWT_SECRET: Joi.string().required().description('JWT secret key'),
     JWT_ACCESS_EXPIRATION_MINUTES: Joi.number().default(30).description('minutes after which access tokens expire'),
@@ -22,6 +24,10 @@ const envVarsSchema = Joi.object()
 
 const { value: envVars, error } = envVarsSchema.prefs({ errors: { label: 'key' } }).validate(process.env);
 
+const elasticClient = new Client({
+  host: envVars.ELASTICSEARCH_HOST,
+});
+
 if (error) {
   throw new Error(`Config validation error: ${error.message}`);
 }
@@ -29,6 +35,7 @@ if (error) {
 module.exports = {
   env: envVars.NODE_ENV,
   port: envVars.PORT,
+  elasticClient,
   mongoose: {
     url: envVars.MONGODB_URL + (envVars.NODE_ENV === 'test' ? '-test' : ''),
     options: {

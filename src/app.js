@@ -6,6 +6,8 @@ const compression = require('compression');
 const cors = require('cors');
 const passport = require('passport');
 const httpStatus = require('http-status');
+const bodyParser = require('body-parser');
+const fileUpload = require('express-fileupload');
 const config = require('./config/config');
 const morgan = require('./config/morgan');
 const { jwtStrategy } = require('./config/passport');
@@ -24,12 +26,6 @@ if (config.env !== 'test') {
 // set security HTTP headers
 app.use(helmet());
 
-// parse json request body
-app.use(express.json());
-
-// parse urlencoded request body
-app.use(express.urlencoded({ extended: true }));
-
 // sanitize request data
 app.use(xss());
 app.use(mongoSanitize());
@@ -40,6 +36,20 @@ app.use(compression());
 // enable cors
 app.use(cors());
 app.options('*', cors());
+
+app.set('trust proxy', '8.8.8.8');
+
+app.use(
+  bodyParser.urlencoded({
+    extended: true,
+  })
+);
+app.use(bodyParser.json());
+app.use(
+  fileUpload({
+    createParentPath: true,
+  })
+);
 
 // jwt authentication
 app.use(passport.initialize());

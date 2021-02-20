@@ -9,6 +9,10 @@ const unitSchema = mongoose.Schema(
     label: { type: String, required: true, trim: true, default: '' },
     parentNode: { type: String, required: true, trim: true, default: '' },
     depRelation: { type: String, required: true, trim: true, default: '' },
+    article: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Article',
+    },
   },
   {
     timestamps: true,

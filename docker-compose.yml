@@ -6,6 +6,7 @@ services:
     image: node-app
     environment:
       - MONGODB_URL=mongodb://mongodb:27017/vincurate
+      - ELASTICSEARCH_HOST=http://es01:9200
     ports:
       - '3000:3000'
     depends_on:
@@ -13,7 +14,7 @@ services:
     volumes:
       - .:/usr/src/node-app
     networks:
-      - node-network
+      - backend-network
 
   mongodb:
     image: mongo:4.2.1-bionic
@@ -22,7 +23,7 @@ services:
     volumes:
       - dbdata:/data/db
     networks:
-      - node-network
+      - backend-network
 
   es01:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.10.1
@@ -43,7 +44,7 @@ services:
     ports:
       - 9200:9200
     networks:
-      - elastic
+      - backend-network
 
   es02:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.10.1
@@ -64,7 +65,7 @@ services:
     ports:
       - 9201:9201
     networks:
-      - elastic
+      - backend-network
 
   es03:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.10.1
@@ -85,7 +86,7 @@ services:
     ports:
       - 9202:9202
     networks:
-      - elastic
+      - backend-network
 
   kib01:
     image: docker.elastic.co/kibana/kibana:7.10.1
@@ -96,7 +97,7 @@ services:
       ELASTICSEARCH_URL: http://es01:9200
       ELASTICSEARCH_HOSTS: http://es01:9200
     networks:
-      - elastic
+      - backend-network
 
 volumes:
   data01:
@@ -108,7 +109,5 @@ volumes:
   dbdata:
 
 networks:
-  node-network:
-    driver: bridge
-  elastic:
+  backend-network:
     driver: bridge

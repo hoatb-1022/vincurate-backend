@@ -4,22 +4,22 @@ const neatCsv = require('neat-csv');
 const { toJSON, paginate } = require('./plugins');
 const User = require('./user.model');
 const Unit = require('./unit.model');
+const { elasticClient } = require('../config/config');
 
 const articleSchema = mongoose.Schema(
   {
-    title: { type: String, required: true, unique: true, trim: true, default: '' },
-    source: { type: String, required: true, trim: true, default: '' },
-    category: { type: String, required: true, trim: true, default: 'News' },
+    title: { type: String, trim: true, default: '' },
+    source: { type: String, default: '' },
+    category: { type: String, required: true, default: 'News' },
     description: { type: String, required: true, trim: true, default: '' },
-    units: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Unit',
-      },
-    ],
-    uploader: {
+    units: {
+      type: [Unit.schema],
+      ref: 'Unit',
+    },
+    user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
+      es_select: '_id name email',
     },
   },
   {
@@ -29,13 +29,15 @@ const articleSchema = mongoose.Schema(
 
 articleSchema.plugin(toJSON);
 articleSchema.plugin(paginate);
+
 articleSchema.plugin(mongoosastic, {
+  esClient: elasticClient,
   populate: [
     {
-      path: 'uploader',
+      path: 'user',
       model: 'User',
       schema: User.schema,
-      select: '_id username fullName',
+      select: '_id name email',
     },
   ],
 });
@@ -76,6 +78,56 @@ articleSchema.statics.getUnitConcept = function (unit) {
   if (!label || !label.length) label = 'O';
 
   return label;
+};
+
+articleSchema.statics.getArticlesShortDesc = function (tokens) {
+  const noBeforeSpaceCharacters = ['.', ',', ':', ')', '}', ']', '"', "'", ';'];
+  const noAfterSpaceCharacters = ['(', '[', '{', '"', "'"];
+  let result = '';
+  let currentType = 'O';
+
+  tokens.slice(0, 65).forEach((token, index) => {
+    let after = ' ';
+    if (
+      index === tokens.length - 1 ||
+      noBeforeSpaceCharacters.includes(this.getUnitConcept(tokens[index + 1])) ||
+      noAfterSpaceCharacters.includes(this.getUnitConcept(token))
+    )
+      after = '';
+
+    let before = ' ';
+    if (
+      index === 0 ||
+      noAfterSpaceCharacters.includes(this.getUnitConcept(tokens[index - 1])) ||
+      noBeforeSpaceCharacters.includes(this.getUnitConcept(token))
+    )
+      before = '';
+
+    const conceptType = this.getUnitConcept(token);
+    let nextAdd = '';
+    if (conceptType.startsWith('B') || conceptType !== currentType) {
+      if (currentType !== 'O') {
+        if (conceptType === 'O') {
+          result = result.trim();
+          nextAdd = `</span>${before}${token.word}${after}`;
+        } else {
+          result = result.trim();
+          nextAdd = `</span>${before}<span class="concept-${conceptType}-text">${token.word}${after}`;
+        }
+      } else {
+        nextAdd = `<span class="concept-${conceptType}-text">${token.word}${after}`;
+      }
+
+      currentType = conceptType;
+    } else {
+      nextAdd = `${token.word}${after}`;
+    }
+
+    result += nextAdd;
+  });
+  result = `${result.trim()}...`;
+
+  return result;
 };
 
 /**
