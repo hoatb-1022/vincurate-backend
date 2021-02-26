@@ -1,6 +1,6 @@
 const roles = ['user', 'admin'];
 
-const userRights = ['uploadFile'];
+const userRights = ['uploadFile', 'manageArticles'];
 const adminRights = [...userRights, 'getUsers', 'manageUsers'];
 
 const roleRights = new Map();

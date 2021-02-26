@@ -29,7 +29,7 @@ const getArticle = {
 
 const deleteArticle = {
   params: Joi.object().keys({
-    userId: Joi.string().custom(objectId),
+    articleId: Joi.string().custom(objectId),
   }),
 };
 

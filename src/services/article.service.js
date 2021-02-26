@@ -46,10 +46,6 @@ const uploadFile = async (files, source, userId) => {
     unit.article = newArticle.id;
   });
 
-  newArticle.on('es-indexed', function (err, res) {
-    console.log(err);
-    console.log(res);
-  });
   await user.save();
   await newArticle.save();
   await newUnits.map((unit) => unit.save());

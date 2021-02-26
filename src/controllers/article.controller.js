@@ -33,9 +33,15 @@ const getNextArticle = catchAsync(async (req, res) => {
   res.send(article);
 });
 
+const deleteArticle = catchAsync(async (req, res) => {
+  await articleService.deleteArticleById(req.params.articleId);
+  res.status(httpStatus.NO_CONTENT).send();
+});
+
 module.exports = {
   getArticles,
   uploadFile,
   getArticle,
   getNextArticle,
+  deleteArticle,
 };
