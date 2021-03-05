@@ -25,6 +25,11 @@ const getArticle = catchAsync(async (req, res) => {
   res.send(article);
 });
 
+const exportArticle = catchAsync(async (req, res) => {
+  const { fileName, data } = await articleService.exportArticleById(req.params.articleId);
+  res.status(httpStatus.CREATED).header('Content-Type', 'text/csv').attachment(fileName).send(data);
+});
+
 const getNextArticle = catchAsync(async (req, res) => {
   const article = await articleService.getNextArticleById(req.params.articleId);
   if (!article) {
@@ -42,6 +47,7 @@ module.exports = {
   getArticles,
   uploadFile,
   getArticle,
+  exportArticle,
   getNextArticle,
   deleteArticle,
 };

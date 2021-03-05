@@ -8,11 +8,13 @@ const router = express.Router();
 
 router.get('/', validate(articleValidation.getArticles), articleController.getArticles);
 router.get('/:articleId/next', validate(articleValidation.getArticle), articleController.getNextArticle);
+router.get('/:articleId/export', validate(articleValidation.getArticle), articleController.exportArticle);
 router.route('/uploadFile').post(auth('uploadFile'), validate(articleValidation.uploadFile), articleController.uploadFile);
 router
   .route('/:articleId')
   .get(validate(articleValidation.getArticle), articleController.getArticle)
   .delete(auth('manageArticles'), validate(articleValidation.deleteArticle), articleController.deleteArticle);
+
 module.exports = router;
 
 /**

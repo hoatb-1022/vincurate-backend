@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const mongoosastic = require('mongoosastic');
 const neatCsv = require('neat-csv');
+const { Parser } = require('json2csv');
 const { toJSON, paginate } = require('./plugins');
 const User = require('./user.model');
 const Unit = require('./unit.model');
@@ -128,6 +129,25 @@ articleSchema.statics.getArticlesShortDesc = function (tokens) {
   result = `${result.trim()}...`;
 
   return result;
+};
+
+articleSchema.methods.csvUnitsData = function () {
+  const article = this;
+  const fields = Object.keys(Unit.schema.obj);
+  const opts = {
+    fields,
+    header: false,
+  };
+  const units = article.units.map((t) => ({
+    senIndex: t.senIndex,
+    word: t.word,
+    posTag: t.posTag,
+    label: t.label,
+    parentNode: t.parentNode,
+    depRelation: t.depRelation,
+  }));
+  const parser = new Parser(opts);
+  return parser.parse(units);
 };
 
 /**

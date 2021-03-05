@@ -54,7 +54,19 @@ const uploadFile = async (files, source, userId) => {
 };
 
 const getArticleById = async (id) => {
-  return Article.findById(id).populate(['user', 'units']);
+  return Article.findById(id).populate('user');
+};
+
+const exportArticleById = async (articleId) => {
+  const article = await getArticleById(articleId);
+  if (!article) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Article not found');
+  }
+
+  const fileName = `${article._id}_tokens.csv`;
+  const data = article.csvUnitsData();
+
+  return { fileName, data };
 };
 
 const deleteArticleById = async (articleId) => {
@@ -78,6 +90,7 @@ module.exports = {
   queryArticles,
   uploadFile,
   getArticleById,
+  exportArticleById,
   deleteArticleById,
   getNextArticleById,
 };
