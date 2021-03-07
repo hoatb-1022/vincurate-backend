@@ -11,9 +11,10 @@ const getArticles = catchAsync(async (req, res) => {
 const uploadFile = catchAsync(async (req, res) => {
   const {
     files,
-    body: { source, userId },
+    body: { source },
+    user,
   } = req;
-  const article = await articleService.uploadFile(files, source, userId);
+  const article = await articleService.uploadFile(files, source, user);
   res.status(httpStatus.CREATED).send(article);
 });
 

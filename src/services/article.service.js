@@ -22,14 +22,9 @@ const queryArticles = async ({ query: { q, per, page, order } }) => {
   });
 };
 
-const uploadFile = async (files, source, userId) => {
+const uploadFile = async (files, source, user) => {
   if (!files) {
     throw new ApiError(httpStatus.NOT_FOUND, 'No file uploaded');
-  }
-
-  const user = await userService.getUserById(userId);
-  if (!user) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
   }
 
   const { article } = files;
@@ -38,7 +33,7 @@ const uploadFile = async (files, source, userId) => {
     source,
     description: Article.getArticlesShortDesc(newUnits),
     units: newUnits,
-    user: userId,
+    user: user.id,
   });
   user.articles.push(newArticle.id);
   newUnits.forEach((unit) => {

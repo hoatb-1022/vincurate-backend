@@ -17,7 +17,6 @@ const uploadFile = {
   }),
   body: Joi.object().keys({
     source: Joi.string(),
-    userId: Joi.string().custom(objectId),
   }),
 };
 
