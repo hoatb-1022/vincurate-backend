@@ -41,8 +41,8 @@ const uploadFile = async (files, source, user) => {
     unit.article = newArticle.id;
   });
 
-  await user.save();
   await newArticle.save();
+  await user.save();
   await newUnits.map((unit) => unit.save());
 
   return newArticle;
