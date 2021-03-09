@@ -80,6 +80,10 @@ const deleteUserById = async (userId) => {
   return user;
 };
 
+const getUserArticles = async (userId) => {
+  return User.findById(userId).populate('articles');
+};
+
 module.exports = {
   createUser,
   queryUsers,
@@ -87,4 +91,5 @@ module.exports = {
   getUserByEmail,
   updateUserById,
   deleteUserById,
+  getUserArticles,
 };

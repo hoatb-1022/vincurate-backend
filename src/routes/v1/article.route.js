@@ -13,6 +13,7 @@ router.route('/upload').post(auth('uploadFile'), validate(articleValidation.uplo
 router
   .route('/:articleId')
   .get(validate(articleValidation.getArticle), articleController.getArticle)
+  .patch(auth('manageArticles'), validate(articleValidation.updateArticle), articleController.updateArticle)
   .delete(auth('manageArticles'), validate(articleValidation.deleteArticle), articleController.deleteArticle);
 
 module.exports = router;

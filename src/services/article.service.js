@@ -1,13 +1,13 @@
 const httpStatus = require('http-status');
 const { Article } = require('../models');
 const ApiError = require('../utils/ApiError');
-const { userService } = require('.');
 
 const queryArticles = async ({ query: { q, per, page, order } }) => {
   const query = !q || !q.length ? '*' : q;
   const size = per || 15;
   const from = (page - 1) * size || 0;
-  const sort = [{ createdAt: { order } }];
+  const _order = order || 'desc';
+  const sort = [{ createdAt: { order: _order } }];
   const searchOptions = {
     query_string: {
       query,
@@ -73,6 +73,17 @@ const deleteArticleById = async (articleId) => {
   return article;
 };
 
+const updateArticleById = async (articleId, updateBody) => {
+  const article = await getArticleById(articleId);
+  if (!article) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Article not found');
+  }
+
+  Object.assign(article, updateBody);
+  await article.save();
+  return article;
+};
+
 const getNextArticleById = async (id) => {
   const article = await getArticleById(id);
   if (!article) {
@@ -85,6 +96,7 @@ module.exports = {
   queryArticles,
   uploadFile,
   getArticleById,
+  updateArticleById,
   exportArticleById,
   deleteArticleById,
   getNextArticleById,

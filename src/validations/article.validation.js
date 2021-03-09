@@ -32,9 +32,24 @@ const deleteArticle = {
   }),
 };
 
+const updateArticle = {
+  params: Joi.object().keys({
+    articleId: Joi.required().custom(objectId),
+  }),
+  body: Joi.object()
+    .keys({
+      title: Joi.string(),
+      source: Joi.string(),
+      category: Joi.string(),
+      visibility: Joi.string(),
+    })
+    .min(1),
+};
+
 module.exports = {
   uploadFile,
   getArticle,
   getArticles,
   deleteArticle,
+  updateArticle,
 };

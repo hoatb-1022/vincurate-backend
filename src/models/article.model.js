@@ -11,7 +11,18 @@ const articleSchema = mongoose.Schema(
   {
     title: { type: String, trim: true, default: '' },
     source: { type: String, default: '' },
-    category: { type: String, required: true, default: 'News' },
+    category: {
+      type: String,
+      required: true,
+      enum: ['News', 'Others'],
+      default: 'News',
+    },
+    visibility: {
+      type: String,
+      required: true,
+      enum: ['Draft', 'Private', 'Public'],
+      default: 'Public',
+    },
     description: { type: String, required: true, trim: true, default: '' },
     units: {
       type: [Unit.schema],
