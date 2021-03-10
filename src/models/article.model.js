@@ -20,8 +20,12 @@ const articleSchema = mongoose.Schema(
     visibility: {
       type: String,
       required: true,
-      enum: ['Draft', 'Private', 'Public'],
-      default: 'Public',
+      enum: ['Personal', 'Stakeholders', 'Community'],
+      default: 'Personal',
+    },
+    isApproved: {
+      type: Boolean,
+      default: false,
     },
     description: { type: String, required: true, trim: true, default: '' },
     units: {
