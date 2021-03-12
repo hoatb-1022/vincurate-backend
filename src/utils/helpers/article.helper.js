@@ -1,57 +1,62 @@
 const neatCsv = require('neat-csv');
 const { Article, Unit, Annotation, Label } = require('../../models');
 const { convertCONLLToJSONL, convertPlainTextToJSONL } = require('./converter.helper');
+const { callSequentially } = require('./promise.helpers');
 
 async function importSequenceLabelByJSONL(user, data, options) {
   const article = new Article();
   article.user = user.id;
 
-  const mUnits = [];
-  const mAnnotations = [];
-  const mlabels = [];
+  const nUnits = [];
+  const nAnnotations = [];
+  const nlabels = [];
+  const allLabels = [];
 
-  await Promise.all(
-    data.map(async (line) => {
-      const obj = typeof line === 'string' ? JSON.parse(line) : line;
-      const { text, labels } = obj;
-      const unit = new Unit();
-      unit.text = options && options.formatter ? options.formatter(text) : text;
-      unit.article = article.id;
+  const dataPromises = data.map(async (line) => {
+    const obj = typeof line === 'string' ? JSON.parse(line) : line;
+    const { text, labels } = obj;
+    const unit = new Unit();
+    unit.text = options && options.formatter ? options.formatter(text) : text;
+    unit.article = article.id;
 
-      await Promise.all(
-        labels.map(async (l) => {
-          const annotation = new Annotation();
-          const [offsetStart, offsetEnd, value] = l;
-          annotation.offsetStart = offsetStart;
-          annotation.offsetEnd = offsetEnd;
-          annotation.unit = unit.id;
-          annotation.user = user.id;
+    const labelPromises = labels.map(async (l) => {
+      const annotation = new Annotation();
+      const [offsetStart, offsetEnd, value] = l;
+      annotation.offsetStart = offsetStart;
+      annotation.offsetEnd = offsetEnd;
+      annotation.unit = unit.id;
+      annotation.user = user.id;
 
-          let label = await Label.findOne({ value }).exec();
-          if (!label) {
-            label = new Label();
-            label.value = value;
-            label.color = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
-          }
+      let label = await Label.findOne({ value }).exec();
+      if (!label) label = allLabels.find((_l) => _l.value === value);
+      if (!label) {
+        label = new Label();
+        label.value = value;
+        label.color = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
 
-          annotation.label = label;
-          mlabels.push(label);
+        nlabels.push(label);
+      }
 
-          unit.annotations.push(annotation);
-          mAnnotations.push(annotation);
-        })
-      );
+      annotation.label = label;
+      allLabels.push(label);
 
-      article.units.push(unit);
-      mUnits.push(unit);
-    })
-  );
+      unit.annotations.push(annotation);
+      nAnnotations.push(annotation);
+    });
+
+    await callSequentially(labelPromises);
+
+    article.units.push(unit);
+    nUnits.push(unit);
+  });
+
+  await callSequentially(dataPromises);
 
   return {
     article,
-    units: mUnits,
-    annotations: mAnnotations,
-    labels: mlabels,
+    units: nUnits,
+    annotations: nAnnotations,
+    labels: nlabels,
   };
 }
 
