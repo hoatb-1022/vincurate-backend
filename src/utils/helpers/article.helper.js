@@ -31,7 +31,7 @@ async function importSequenceLabelByJSONL(user, data, options) {
           if (!label) {
             label = new Label();
             label.value = value;
-            label.color = Math.floor(Math.random() * 16777215).toString(16);
+            label.color = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
           }
 
           annotation.label = label;
