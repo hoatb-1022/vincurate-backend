@@ -4,7 +4,7 @@ const { toJSON, paginate } = require('./plugins');
 const labelSchema = mongoose.Schema(
   {
     value: { type: String, required: true, trim: true, default: '' },
-    color: { type: String, required: true, trim: true, default: '#000000' },
+    color: { type: String, required: true, trim: true, default: '#2b2b2b' },
     type: { type: String, required: true, enum: ['common', 'category'], default: 'common' },
   },
   {
