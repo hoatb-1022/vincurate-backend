@@ -1,5 +1,6 @@
 const httpStatus = require('http-status');
 const { Article } = require('../models');
+const { articleHelper } = require('../utils/helpers');
 const ApiError = require('../utils/ApiError');
 
 const queryArticles = async ({ query: { q, per, page, order } }) => {
@@ -22,30 +23,22 @@ const queryArticles = async ({ query: { q, per, page, order } }) => {
   });
 };
 
-const uploadFile = async (files, source, user) => {
+const uploadFile = async (user, files, method) => {
   if (!files) {
     throw new ApiError(httpStatus.NOT_FOUND, 'No file uploaded');
   }
 
-  const { article } = files;
-  const newUnits = await Article.unitsFromFile(article);
-  const newArticle = new Article({
-    source,
-    description: Article.getArticlesShortDesc(newUnits),
-    units: newUnits,
-    user: user.id,
-  });
-  user.articles.push(newArticle.id);
-  newUnits.forEach((unit) => {
-    // eslint-disable-next-line no-param-reassign
-    unit.article = newArticle.id;
-  });
+  const { file } = files;
+  const { article, units, annotations, labels } = await articleHelper.importArticleFromFile(user, file, method);
+  user.articles.push(article);
 
-  await newArticle.save();
+  await article.save();
   await user.save();
-  await newUnits.map((unit) => unit.save());
+  await units.map((unit) => unit.save());
+  await annotations.map((anno) => anno.save());
+  await labels.map((label) => label.save());
 
-  return newArticle;
+  return article;
 };
 
 const getArticleById = async (id) => {

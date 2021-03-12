@@ -16,7 +16,7 @@ const uploadFile = {
     filename: Joi.string(),
   }),
   body: Joi.object().keys({
-    source: Joi.string(),
+    method: Joi.string(),
   }),
 };
 
@@ -39,9 +39,6 @@ const updateArticle = {
   body: Joi.object()
     .keys({
       title: Joi.string(),
-      source: Joi.string(),
-      category: Joi.string(),
-      visibility: Joi.string(),
     })
     .min(1),
 };

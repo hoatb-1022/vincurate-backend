@@ -11,10 +11,10 @@ const getArticles = catchAsync(async (req, res) => {
 const uploadFile = catchAsync(async (req, res) => {
   const {
     files,
-    body: { source },
+    body: { method },
     user,
   } = req;
-  const article = await articleService.uploadFile(files, source, user);
+  const article = await articleService.uploadFile(user, files, method);
   res.status(httpStatus.CREATED).send(article);
 });
 
