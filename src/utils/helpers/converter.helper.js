@@ -27,7 +27,7 @@ function convertCONLLToJSONL(data, lineSeparator) {
 
       // When type changed/end of data
       if (currentType !== type) {
-        if (currentType !== 'O') jsonlLine.labels.push([offsetStart, jsonlLine.text.length, currentType]);
+        if (currentType !== 'O') jsonlLine.labels.push([offsetStart, jsonlLine.text.trim().length, currentType]);
 
         currentType = type;
         offsetStart = jsonlLine.text.length;

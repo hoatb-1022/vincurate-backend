@@ -2,27 +2,44 @@ const neatCsv = require('neat-csv');
 const { Article, Annotation, Label } = require('../../models');
 const { convertCONLLToJSONL, convertPlainTextToJSONL } = require('./converter.helper');
 
+function generateArticleDescription(article) {
+  const limitCharacter = 250;
+  const annos = article.annotations
+    .filter((a) => a.offsetEnd <= limitCharacter)
+    .sort((a1, a2) => a2.offsetEnd - a1.offsetEnd);
+  let desc = article.content.substring(0, annos[0].offsetEnd);
+
+  annos.forEach((anno) => {
+    let annotatedStr = desc.substring(anno.offsetStart, anno.offsetEnd);
+    annotatedStr = `<span class="concept-${anno.label.value}-text">${annotatedStr}</span>`;
+    desc = [desc.slice(0, anno.offsetStart), annotatedStr, desc.slice(anno.offsetEnd)].join('');
+  });
+
+  return `${desc}...`;
+}
+
 async function importSequenceLabelByJSONL(user, data, options) {
   const article = new Article();
   article.user = user.id;
 
   const nlabels = [];
   const allLabels = [];
+  const sentences = [];
   let currentOffset = 0;
 
   // eslint-disable-next-line no-restricted-syntax
-  for (const line of data) {
+  for (const [index, line] of data.entries()) {
     const obj = typeof line === 'string' ? JSON.parse(line) : line;
     const { text, labels } = obj;
     const articleSentence = options && options.formatter ? options.formatter(text) : text;
-    article.content.sentences.push(articleSentence);
+    sentences.push(articleSentence);
 
     // eslint-disable-next-line no-restricted-syntax
     for (const l of labels) {
       const annotation = new Annotation();
       const [offsetStart, offsetEnd, value] = l;
-      annotation.offsetStart = offsetStart;
-      annotation.offsetEnd = offsetEnd;
+      annotation.offsetStart = offsetStart + currentOffset + index;
+      annotation.offsetEnd = offsetEnd + currentOffset + index;
       annotation.article = article.id;
       annotation.user = user.id;
 
@@ -40,14 +57,16 @@ async function importSequenceLabelByJSONL(user, data, options) {
       }
 
       annotation.label = label;
-      annotation.offsetInArticle = currentOffset;
 
       allLabels.push(label);
-      article.content.annotations.push(annotation);
+      article.annotations.push(annotation);
     }
 
     currentOffset += articleSentence.length;
   }
+
+  article.content = sentences.join(' ');
+  article.description = generateArticleDescription(article);
 
   return {
     article,

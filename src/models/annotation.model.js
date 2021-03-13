@@ -4,7 +4,6 @@ const Label = require('./label.model');
 
 const annotationSchema = mongoose.Schema(
   {
-    offsetInArticle: { type: Number },
     offsetStart: { type: Number },
     offsetEnd: { type: Number },
     article: {

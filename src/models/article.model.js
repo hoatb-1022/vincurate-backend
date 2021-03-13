@@ -14,10 +14,8 @@ const articleSchema = mongoose.Schema(
       ref: 'User',
       es_select: '_id name email',
     },
-    content: {
-      sentences: [{ type: String, default: '' }],
-      annotations: [Annotation.schema],
-    },
+    content: { type: String, default: '' },
+    annotations: [Annotation.schema],
   },
   {
     timestamps: true,
