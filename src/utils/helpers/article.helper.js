@@ -1,7 +1,6 @@
 const neatCsv = require('neat-csv');
-const { Article, Unit, Annotation, Label } = require('../../models');
+const { Article, Annotation, Label } = require('../../models');
 const { convertCONLLToJSONL, convertPlainTextToJSONL } = require('./converter.helper');
-const { callSequentially } = require('./promise.helpers');
 
 async function importSequenceLabelByJSONL(user, data, options) {
   const article = new Article();
@@ -9,44 +8,46 @@ async function importSequenceLabelByJSONL(user, data, options) {
 
   const nlabels = [];
   const allLabels = [];
+  let currentOffset = 0;
 
-  const dataPromises = data.map(async (line) => {
+  // eslint-disable-next-line no-restricted-syntax
+  for (const line of data) {
     const obj = typeof line === 'string' ? JSON.parse(line) : line;
     const { text, labels } = obj;
-    const unit = new Unit();
-    unit.text = options && options.formatter ? options.formatter(text) : text;
-    unit.article = article.id;
+    const articleSentence = options && options.formatter ? options.formatter(text) : text;
+    article.content.sentences.push(articleSentence);
 
-    const labelPromises = labels.map(async (l) => {
+    // eslint-disable-next-line no-restricted-syntax
+    for (const l of labels) {
       const annotation = new Annotation();
       const [offsetStart, offsetEnd, value] = l;
       annotation.offsetStart = offsetStart;
       annotation.offsetEnd = offsetEnd;
-      annotation.unit = unit.id;
+      annotation.article = article.id;
       annotation.user = user.id;
 
-      let label = await Label.findOne({ value }).exec();
-      if (!label) label = allLabels.find((_l) => _l.value === value);
+      let label = allLabels.find((_l) => _l.value === value);
+      // eslint-disable-next-line no-await-in-loop
+      if (!label) label = await Label.findOne({ value }).exec();
       if (!label) {
         label = new Label();
         label.value = value;
+
+        // Random label color
         label.color = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
 
         nlabels.push(label);
       }
 
       annotation.label = label;
+      annotation.offsetInArticle = currentOffset;
+
       allLabels.push(label);
+      article.content.annotations.push(annotation);
+    }
 
-      unit.annotations.push(annotation);
-    });
-
-    await callSequentially(labelPromises);
-
-    article.units.push(unit);
-  });
-
-  await callSequentially(dataPromises);
+    currentOffset += articleSentence.length;
+  }
 
   return {
     article,

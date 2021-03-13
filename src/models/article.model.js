@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const mongoosastic = require('mongoosastic');
 const { toJSON, paginate } = require('./plugins');
 const User = require('./user.model');
-const Unit = require('./unit.model');
+const Annotation = require('./annotation.model');
 const { elasticClient } = require('../config/config');
 
 const articleSchema = mongoose.Schema(
@@ -14,7 +14,10 @@ const articleSchema = mongoose.Schema(
       ref: 'User',
       es_select: '_id name email',
     },
-    units: [],
+    content: {
+      sentences: [{ type: String, default: '' }],
+      annotations: [Annotation.schema],
+    },
   },
   {
     timestamps: true,
