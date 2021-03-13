@@ -7,8 +7,6 @@ async function importSequenceLabelByJSONL(user, data, options) {
   const article = new Article();
   article.user = user.id;
 
-  const nUnits = [];
-  const nAnnotations = [];
   const nlabels = [];
   const allLabels = [];
 
@@ -41,21 +39,17 @@ async function importSequenceLabelByJSONL(user, data, options) {
       allLabels.push(label);
 
       unit.annotations.push(annotation);
-      nAnnotations.push(annotation);
     });
 
     await callSequentially(labelPromises);
 
     article.units.push(unit);
-    nUnits.push(unit);
   });
 
   await callSequentially(dataPromises);
 
   return {
     article,
-    units: nUnits,
-    annotations: nAnnotations,
     labels: nlabels,
   };
 }

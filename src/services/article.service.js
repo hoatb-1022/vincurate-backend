@@ -29,13 +29,11 @@ const uploadFile = async (user, files, method) => {
   }
 
   const { file } = files;
-  const { article, units, annotations, labels } = await articleHelper.importArticleFromFile(user, file, method);
+  const { article, labels } = await articleHelper.importArticleFromFile(user, file, method);
   user.articles.push(article);
 
   await article.save();
   await user.save();
-  await units.map((unit) => unit.save());
-  await annotations.map((anno) => anno.save());
   await labels.map((label) => label.save());
 
   return article;

@@ -14,7 +14,7 @@ const articleSchema = mongoose.Schema(
       ref: 'User',
       es_select: '_id name email',
     },
-    units: [Unit.schema],
+    units: [],
   },
   {
     timestamps: true,
