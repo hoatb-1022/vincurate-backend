@@ -7,11 +7,11 @@ function generateArticleDescription(article) {
   const annos = article.annotations
     .filter((a) => a.offsetEnd <= limitCharacter)
     .sort((a1, a2) => a2.offsetEnd - a1.offsetEnd);
-  let desc = article.content.substring(0, annos[0].offsetEnd);
+  let desc = article.content.substring(0, limitCharacter);
 
   annos.forEach((anno) => {
     let annotatedStr = desc.substring(anno.offsetStart, anno.offsetEnd);
-    annotatedStr = `<span class="concept-${anno.label.value}-text">${annotatedStr}</span>`;
+    annotatedStr = `<span class="has-concept concept-${anno.label.value}">${annotatedStr}</span>`;
     desc = [desc.slice(0, anno.offsetStart), annotatedStr, desc.slice(anno.offsetEnd)].join('');
   });
 
@@ -127,15 +127,15 @@ async function importArticleFromFile(user, file, method) {
     case 'SL_CONLL':
       result = await importSequenceLabelByCoNLL(user, data);
       break;
-    case 'SL_NER':
-      result = await importSequenceLabelByNER(user, data);
-      break;
     case 'SL_PLAIN':
       result = await importSequenceLabelByPlainText(user, dataSplited);
       break;
     case 'SL_JSONL':
-    default:
       result = await importSequenceLabelByJSONL(user, dataSplited);
+      break;
+    case 'SL_NER':
+    default:
+      result = await importSequenceLabelByNER(user, data);
       break;
   }
 
