@@ -16,6 +16,10 @@ const articleSchema = mongoose.Schema(
     },
     content: { type: String, default: '' },
     annotations: [Annotation.schema],
+    project: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Project',
+    },
   },
   {
     timestamps: true,
