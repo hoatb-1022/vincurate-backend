@@ -34,13 +34,8 @@ const deleteProject = catchAsync(async (req, res) => {
   res.status(httpStatus.NO_CONTENT).send();
 });
 
-const addProjectRole = catchAsync(async (req, res) => {
-  const project = await projectService.addProjectRoleById(req.params.projectId, req.body);
-  res.send(project);
-});
-
-const removeProjectRole = catchAsync(async (req, res) => {
-  const project = await projectService.removeProjectRoleById(req.params.projectId, req.body);
+const updateProjectRoles = catchAsync(async (req, res) => {
+  const project = await projectService.updateProjectRolesById(req.params.projectId, req.body);
   res.send(project);
 });
 
@@ -50,6 +45,5 @@ module.exports = {
   createProject,
   updateProject,
   deleteProject,
-  addProjectRole,
-  removeProjectRole,
+  updateProjectRoles,
 };

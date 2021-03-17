@@ -1,13 +1,13 @@
 const projectTypes = {
-  SEQ_2_SEQ: 'seq_2_seq',
-  SEQ_LABEL: 'seq_label',
-  DOC_CLASS: 'doc_class',
+  SEQ_2_SEQ: 'Sequence to Sequence',
+  SEQ_LABEL: 'Sequence Labeling',
+  DOC_CLASS: 'Document Classification',
 };
 
 const projectRoles = {
-  ANNOTATOR: 'annotator',
-  APPROVER: 'approver',
-  PROJECT_ADMIN: 'project_admin',
+  ANNOTATOR: 'Annotator',
+  APPROVER: 'Approver',
+  PROJECT_ADMIN: 'Project Admin',
 };
 
 module.exports = {

@@ -42,22 +42,15 @@ const deleteProject = {
   }),
 };
 
-const addProjectRole = {
+const updateProjectRoles = {
   params: Joi.object().keys({
     projectId: Joi.string().custom(objectId),
-    body: Joi.object()
-      .keys({
+    body: Joi.array().items(
+      Joi.object().keys({
         user: Joi.string().custom(objectId),
         role: Joi.string(),
       })
-      .min(1),
-  }),
-};
-
-const removeProjectRole = {
-  params: Joi.object().keys({
-    projectId: Joi.string().custom(objectId),
-    roleId: Joi.string().custom(objectId),
+    ),
   }),
 };
 
@@ -67,6 +60,5 @@ module.exports = {
   getProject,
   updateProject,
   deleteProject,
-  addProjectRole,
-  removeProjectRole,
+  updateProjectRoles,
 };

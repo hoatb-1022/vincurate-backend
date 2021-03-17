@@ -36,12 +36,13 @@ const deleteProjectById = async (projectId) => {
   return project;
 };
 
-const addProjectRoleById = async (projectId, roleBody) => {
+const updateProjectRolesById = async (projectId, roleBody) => {
   const project = await getProjectById(projectId);
   if (!project) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Project not found');
   }
 
+  const projectRoles = [];
   // eslint-disable-next-line no-restricted-syntax
   for (const userRole of roleBody) {
     // eslint-disable-next-line no-await-in-loop
@@ -51,25 +52,10 @@ const addProjectRoleById = async (projectId, roleBody) => {
     }
 
     const projectRole = new ProjectRole(userRole);
-    project.roles.push(projectRole);
+    projectRoles.push(projectRole);
   }
 
-  await project.save();
-  return project;
-};
-
-const removeProjectRoleById = async (projectId, roleId) => {
-  const project = await getProjectById(projectId);
-  if (!project) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Project not found');
-  }
-
-  const index = project.roles.findIndex((role) => role.id === roleId);
-  if (index < 0) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Assigned role not found');
-  }
-  project.roles.splice(index, 1);
-
+  project.roles = projectRoles;
   await project.save();
   return project;
 };
@@ -80,6 +66,5 @@ module.exports = {
   createProject,
   updateProjectById,
   deleteProjectById,
-  addProjectRoleById,
-  removeProjectRoleById,
+  updateProjectRolesById,
 };

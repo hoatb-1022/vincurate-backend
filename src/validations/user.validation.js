@@ -45,7 +45,13 @@ const deleteUser = {
   }),
 };
 
-const getUserArticle = {
+const getUserArticles = {
+  params: Joi.object().keys({
+    userId: Joi.string().custom(objectId),
+  }),
+};
+
+const getUserProjects = {
   params: Joi.object().keys({
     userId: Joi.string().custom(objectId),
   }),
@@ -57,5 +63,6 @@ module.exports = {
   getUser,
   updateUser,
   deleteUser,
-  getUserArticle,
+  getUserArticles,
+  getUserProjects,
 };

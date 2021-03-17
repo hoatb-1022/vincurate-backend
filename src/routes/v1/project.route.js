@@ -18,17 +18,10 @@ router
   .delete(auth('manageProjects'), validate(projectValidation.deleteProject), projectController.deleteProject);
 
 router.post(
-  '/:projectId/add-role',
+  '/:projectId/update-roles',
   auth('manageProjects'),
-  validate(projectValidation.addProjectRole),
-  projectController.addProjectRole
-);
-
-router.post(
-  '/:projectId/remove-role',
-  auth('manageProjects'),
-  validate(projectValidation.removeProjectRole),
-  projectController.removeProjectRole
+  validate(projectValidation.updateProjectRoles),
+  projectController.updateProjectRoles
 );
 
 module.exports = router;

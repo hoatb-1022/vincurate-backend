@@ -40,10 +40,10 @@ const userSchema = mongoose.Schema(
       enum: roles,
       default: 'user',
     },
-    articles: [
+    projects: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Article',
+        ref: 'Project',
       },
     ],
   },

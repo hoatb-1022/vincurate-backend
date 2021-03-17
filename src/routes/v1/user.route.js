@@ -6,6 +6,8 @@ const userController = require('../../controllers/user.controller');
 
 const router = express.Router();
 
+router.get('/all', userController.getAllUsers);
+
 router
   .route('/')
   .post(auth('manageUsers'), validate(userValidation.createUser), userController.createUser)
@@ -17,7 +19,8 @@ router
   .patch(auth('manageUsers'), validate(userValidation.updateUser), userController.updateUser)
   .delete(auth('manageUsers'), validate(userValidation.deleteUser), userController.deleteUser);
 
-router.get('/:userId/articles', validate(userValidation.getUserArticle), userController.getUserArticles);
+router.get('/:userId/articles', validate(userValidation.getUserArticles), userController.getUserArticles);
+router.get('/:userId/projects', validate(userValidation.getUserProjects), userController.getUserProjects);
 
 module.exports = router;
 
