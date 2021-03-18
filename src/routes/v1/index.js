@@ -3,6 +3,7 @@ const authRoute = require('./auth.route');
 const userRoute = require('./user.route');
 const articleRoute = require('./article.route');
 const labelRoute = require('./label.route');
+const projectRoute = require('./project.route');
 const docsRoute = require('./docs.route');
 const config = require('../../config/config');
 
@@ -24,6 +25,10 @@ const defaultRoutes = [
   {
     path: '/labels',
     route: labelRoute,
+  },
+  {
+    path: '/projects',
+    route: projectRoute,
   },
 ];
 

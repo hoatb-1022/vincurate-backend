@@ -18,9 +18,10 @@ function generateArticleDescription(article) {
   return `${desc}...`;
 }
 
-async function importSequenceLabelByJSONL(user, data, options) {
+async function importSequenceLabelByJSONL(user, project, data, options) {
   const article = new Article();
   article.user = user.id;
+  article.project = project.id;
 
   const nlabels = [];
   const allLabels = [];
@@ -74,7 +75,7 @@ async function importSequenceLabelByJSONL(user, data, options) {
   };
 }
 
-async function importSequenceLabelByCoNLL(user, data, options) {
+async function importSequenceLabelByCoNLL(user, project, data, options) {
   let headers = ['text', 'label'];
   let separator = '\t';
   let lineSeparator = () => {};
@@ -85,14 +86,14 @@ async function importSequenceLabelByCoNLL(user, data, options) {
 
   const rows = await neatCsv(data, { headers, separator });
   const jsonlData = convertCONLLToJSONL(rows, lineSeparator);
-  const result = await importSequenceLabelByJSONL(user, jsonlData, options);
+  const result = await importSequenceLabelByJSONL(user, project, jsonlData, options);
 
   return result;
 }
 
-async function importSequenceLabelByNER(user, data) {
+async function importSequenceLabelByNER(user, project, data) {
   const headers = ['senIndex', 'text', 'posTag', 'label', 'parent', 'relation'];
-  const result = await importSequenceLabelByCoNLL(user, data, {
+  const result = await importSequenceLabelByCoNLL(user, project, data, {
     headers,
     separator: ',',
     lineSeparator(row, rows, index) {
@@ -111,31 +112,31 @@ async function importSequenceLabelByNER(user, data) {
   return result;
 }
 
-async function importSequenceLabelByPlainText(user, data) {
+async function importSequenceLabelByPlainText(user, project, data) {
   const jsonlData = convertPlainTextToJSONL(data);
-  const result = await importSequenceLabelByJSONL(user, jsonlData);
+  const result = await importSequenceLabelByJSONL(user, project, jsonlData);
 
   return result;
 }
 
-async function importArticleFromFile(user, file, method) {
+async function importArticleFromFile(user, project, file, method) {
   const data = file.data.toString('utf-8');
   const dataSplited = data.split('\n');
   let result;
 
   switch (method) {
     case 'SL_CONLL':
-      result = await importSequenceLabelByCoNLL(user, data);
+      result = await importSequenceLabelByCoNLL(user, project, data);
       break;
     case 'SL_PLAIN':
-      result = await importSequenceLabelByPlainText(user, dataSplited);
+      result = await importSequenceLabelByPlainText(user, project, dataSplited);
       break;
     case 'SL_JSONL':
-      result = await importSequenceLabelByJSONL(user, dataSplited);
+      result = await importSequenceLabelByJSONL(user, project, dataSplited);
       break;
     case 'SL_NER':
     default:
-      result = await importSequenceLabelByNER(user, data);
+      result = await importSequenceLabelByNER(user, project, data);
       break;
   }
 

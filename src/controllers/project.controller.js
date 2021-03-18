@@ -20,7 +20,7 @@ const getProject = catchAsync(async (req, res) => {
 });
 
 const createProject = catchAsync(async (req, res) => {
-  const project = await projectService.createProject(req.body);
+  const project = await projectService.createProject(req.user, req.body);
   res.status(httpStatus.CREATED).send(project);
 });
 

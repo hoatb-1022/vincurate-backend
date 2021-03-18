@@ -5,7 +5,13 @@ const createProject = {
   body: Joi.object().keys({
     title: Joi.string().required(),
     type: Joi.string().required(),
-    ownerId: Joi.string().custom(objectId),
+    owner: Joi.string().custom(objectId).required(),
+    roles: Joi.array().items(
+      Joi.object().keys({
+        user: Joi.string().custom(objectId),
+        role: Joi.string(),
+      })
+    ),
   }),
 };
 
@@ -29,11 +35,17 @@ const updateProject = {
   params: Joi.object().keys({
     projectId: Joi.required().custom(objectId),
   }),
-  body: Joi.object()
-    .keys({
-      title: Joi.string(),
-    })
-    .min(1),
+  body: Joi.object().keys({
+    title: Joi.string().required(),
+    type: Joi.string().required(),
+    owner: Joi.string().custom(objectId).required(),
+    roles: Joi.array().items(
+      Joi.object().keys({
+        user: Joi.string().custom(objectId),
+        role: Joi.string(),
+      })
+    ),
+  }),
 };
 
 const deleteProject = {

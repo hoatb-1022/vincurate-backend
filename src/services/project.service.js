@@ -8,11 +8,14 @@ const queryProjects = async (filter, options) => {
 };
 
 const getProjectById = async (id) => {
-  return Project.findById(id).populate(['owner', 'articles']);
+  return Project.findById(id).populate(['owner', 'articles']).populate('roles.user');
 };
 
-const createProject = async (projectBody) => {
+const createProject = async (user, projectBody) => {
   const project = await Project.create(projectBody);
+  user.projects.push(project.id);
+  await user.save();
+
   return project;
 };
 

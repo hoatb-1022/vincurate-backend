@@ -17,6 +17,7 @@ const uploadFile = {
   }),
   body: Joi.object().keys({
     method: Joi.string(),
+    projectId: Joi.string().required(),
   }),
 };
 

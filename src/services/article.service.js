@@ -2,6 +2,7 @@ const httpStatus = require('http-status');
 const { Article } = require('../models');
 const { articleHelper } = require('../utils/helpers');
 const ApiError = require('../utils/ApiError');
+const projectService = require('./project.service');
 
 const queryArticles = async ({ query: { q, per, page, order } }) => {
   const query = !q || !q.length ? '*' : q;
@@ -23,17 +24,23 @@ const queryArticles = async ({ query: { q, per, page, order } }) => {
   });
 };
 
-const uploadFile = async (user, files, method) => {
+const uploadFile = async (user, projectId, files, method) => {
   if (!files) {
     throw new ApiError(httpStatus.NOT_FOUND, 'No file uploaded');
   }
 
+  const project = await projectService.getProjectById(projectId);
+  if (!project) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Project not found');
+  }
+
   const { file } = files;
-  const { article, labels } = await articleHelper.importArticleFromFile(user, file, method);
-  user.articles.push(article);
+  const { article, labels } = await articleHelper.importArticleFromFile(user, project, file, method);
+  project.articles.push(article);
 
   await article.save();
   await user.save();
+  await project.save();
   await labels.map((label) => label.save());
 
   return article;
