@@ -4,14 +4,16 @@ const { articleHelper } = require('../utils/helpers');
 const ApiError = require('../utils/ApiError');
 const projectService = require('./project.service');
 
-const queryArticles = async ({ query: { q, per, page, order } }) => {
+const queryArticles = async ({ query: { q, fields, per, page, order } }) => {
   const query = !q || !q.length ? '*' : q;
   const size = per || 15;
   const from = (page - 1) * size || 0;
   const _order = order || 'desc';
+  const _fields = fields ? fields.split(',') : ['*'];
   const sort = [{ createdAt: { order: _order } }];
   const searchOptions = {
     query_string: {
+      fields: _fields,
       query,
     },
   };

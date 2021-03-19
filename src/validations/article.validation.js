@@ -4,6 +4,7 @@ const { objectId } = require('./custom.validation');
 const getArticles = {
   query: Joi.object().keys({
     q: Joi.string(),
+    fields: Joi.string(),
     order: Joi.string(),
     per: Joi.number().integer(),
     page: Joi.number().integer(),
