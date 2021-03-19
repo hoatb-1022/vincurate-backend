@@ -1,5 +1,5 @@
 const httpStatus = require('http-status');
-const { User } = require('../models');
+const { User, Project } = require('../models');
 const ApiError = require('../utils/ApiError');
 
 const createUser = async (userBody) => {
@@ -51,9 +51,15 @@ const deleteUserById = async (userId) => {
 };
 
 const getUserArticles = async (userId) => {
-  const { projects } = await User.findById(userId).populate('articles');
+  const { projects } = await User.findById(userId).populate('projects');
   const articles = [];
-  projects.forEach((p) => articles.push(...p.articles));
+  // eslint-disable-next-line no-restricted-syntax
+  for (const p of projects) {
+    // eslint-disable-next-line no-await-in-loop
+    const project = await Project.findById(p.id).populate('articles');
+    articles.push(...project.articles);
+  }
+
   return articles;
 };
 

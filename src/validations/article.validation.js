@@ -40,6 +40,7 @@ const updateArticle = {
   body: Joi.object()
     .keys({
       title: Joi.string(),
+      content: Joi.string(),
     })
     .min(1),
 };
