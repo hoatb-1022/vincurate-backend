@@ -1,14 +1,19 @@
 const mongoose = require('mongoose');
 const { toJSON, paginate } = require('./plugins');
+const { labelTypes } = require('../config/articles');
 
 const labelSchema = mongoose.Schema(
   {
     value: { type: String, required: true, trim: true, default: '' },
     name: { type: String, default: '' },
     shortcut: { type: String, default: '' },
-    icon: { type: String, default: '' },
     color: { type: String, required: true, trim: true, default: '#2b2b2b' },
-    type: { type: String, required: true, enum: ['concept', 'category'], default: 'concept' },
+    type: {
+      type: String,
+      required: true,
+      enum: [labelTypes.CONCEPT, labelTypes.CATEGORY, labelTypes.TRANSLATION],
+      default: labelTypes.CONCEPT,
+    },
   },
   {
     timestamps: true,

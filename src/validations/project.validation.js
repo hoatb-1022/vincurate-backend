@@ -12,6 +12,7 @@ const createProject = {
         role: Joi.string(),
       })
     ),
+    labels: Joi.array().items(Joi.string().custom(objectId)),
   }),
 };
 
@@ -45,6 +46,7 @@ const updateProject = {
         role: Joi.string(),
       })
     ),
+    labels: Joi.array().items(Joi.string().custom(objectId)),
   }),
 };
 

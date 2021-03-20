@@ -25,6 +25,12 @@ const projectSchema = mongoose.Schema(
       enum: [projectTypes.SEQ_2_SEQ, projectTypes.SEQ_LABEL, projectTypes.DOC_CLASS],
       default: projectTypes.SEQ_LABEL,
     },
+    labels: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Label',
+      },
+    ],
   },
   {
     timestamps: true,
