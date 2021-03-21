@@ -49,6 +49,11 @@ const deleteArticle = catchAsync(async (req, res) => {
   res.status(httpStatus.NO_CONTENT).send();
 });
 
+const updateArticleAnnotations = catchAsync(async (req, res) => {
+  const article = await articleService.updateArticleAnnotationsById(req.params.articleId, req.body);
+  res.send(article);
+});
+
 module.exports = {
   getArticles,
   uploadFile,
@@ -57,4 +62,5 @@ module.exports = {
   exportArticle,
   getNextArticle,
   deleteArticle,
+  updateArticleAnnotations,
 };

@@ -49,7 +49,7 @@ const uploadFile = async (user, projectId, files, method) => {
 };
 
 const getArticleById = async (id) => {
-  return Article.findById(id).populate('user');
+  return Article.findById(id).populate(['user', 'project']);
 };
 
 const exportArticleById = async (articleId) => {
@@ -92,6 +92,17 @@ const getNextArticleById = async (id) => {
   return Article.findOne({ createdAt: { $lt: article.createdAt } }).sort({ createdAt: -1 });
 };
 
+const updateArticleAnnotationsById = async (articleId, { annotations }) => {
+  const article = await getArticleById(articleId);
+  if (!article) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Article not found');
+  }
+
+  article.annotations = annotations;
+  await article.save();
+  return article;
+};
+
 module.exports = {
   queryArticles,
   uploadFile,
@@ -100,4 +111,5 @@ module.exports = {
   exportArticleById,
   deleteArticleById,
   getNextArticleById,
+  updateArticleAnnotationsById,
 };
