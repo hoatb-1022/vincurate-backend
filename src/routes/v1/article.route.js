@@ -14,6 +14,12 @@ router.patch(
   validate(articleValidation.updateArticleAnnotations),
   articleController.updateArticleAnnotations
 );
+router.post(
+  '/:articleId/create-edit-version',
+  auth('manageArticles'),
+  validate(articleValidation.createArticleEditVersion),
+  articleController.createArticleEditVersion
+);
 router.route('/upload').post(auth('uploadFile'), validate(articleValidation.uploadFile), articleController.uploadFile);
 router
   .route('/:articleId')

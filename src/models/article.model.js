@@ -20,6 +20,12 @@ const articleSchema = mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Project',
     },
+    editVersions: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'EditVersion',
+      },
+    ],
   },
   {
     timestamps: true,

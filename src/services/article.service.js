@@ -1,5 +1,5 @@
 const httpStatus = require('http-status');
-const { Article } = require('../models');
+const { Article, EditVersion } = require('../models');
 const { articleHelper } = require('../utils/helpers');
 const ApiError = require('../utils/ApiError');
 const projectService = require('./project.service');
@@ -49,7 +49,7 @@ const uploadFile = async (user, projectId, files, method) => {
 };
 
 const getArticleById = async (id) => {
-  return Article.findById(id).populate(['user', 'project']);
+  return Article.findById(id).populate(['user', 'project', 'editVersions']);
 };
 
 const exportArticleById = async (articleId) => {
@@ -103,6 +103,23 @@ const updateArticleAnnotationsById = async (articleId, { annotations }) => {
   return article;
 };
 
+const createArticleEditVersionById = async (articleId, user, { annotations }) => {
+  const article = await getArticleById(articleId);
+  if (!article) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Article not found');
+  }
+
+  const editVersion = new EditVersion();
+  editVersion.user = user.id;
+  editVersion.article = article.id;
+  editVersion.annotations = annotations;
+  article.editVersions.push(editVersion.id);
+
+  await editVersion.save();
+  await article.save();
+  return article;
+};
+
 module.exports = {
   queryArticles,
   uploadFile,
@@ -112,4 +129,5 @@ module.exports = {
   deleteArticleById,
   getNextArticleById,
   updateArticleAnnotationsById,
+  createArticleEditVersionById,
 };

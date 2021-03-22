@@ -54,6 +54,17 @@ const updateArticleAnnotations = catchAsync(async (req, res) => {
   res.send(article);
 });
 
+const createArticleEditVersion = catchAsync(async (req, res) => {
+  const {
+    params: { articleId },
+    body,
+    user,
+  } = req;
+  console.log(req);
+  const article = await articleService.createArticleEditVersionById(articleId, user, body);
+  res.send(article);
+});
+
 module.exports = {
   getArticles,
   uploadFile,
@@ -63,4 +74,5 @@ module.exports = {
   getNextArticle,
   deleteArticle,
   updateArticleAnnotations,
+  createArticleEditVersion,
 };
