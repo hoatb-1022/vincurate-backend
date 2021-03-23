@@ -9,6 +9,11 @@ const createUser = catchAsync(async (req, res) => {
   res.status(httpStatus.CREATED).send(user);
 });
 
+const getAllUsers = catchAsync(async (req, res) => {
+  const users = await userService.getAllUsers();
+  res.send(users);
+});
+
 const getUsers = catchAsync(async (req, res) => {
   const filter = pick(req.query, ['name', 'role']);
   const options = pick(req.query, ['sortBy', 'limit', 'page']);
@@ -41,15 +46,28 @@ const getUserArticles = catchAsync(async (req, res) => {
     throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
   }
 
-  const { articles } = await userService.getUserArticles(userId);
+  const articles = await userService.getUserArticles(userId);
   res.send(articles);
+});
+
+const getUserProjects = catchAsync(async (req, res) => {
+  const { userId } = req.params;
+  const user = await userService.getUserById(userId);
+  if (!user) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
+  }
+
+  const { projects } = await userService.getUserProjects(userId);
+  res.send(projects);
 });
 
 module.exports = {
   createUser,
+  getAllUsers,
   getUsers,
   getUser,
   updateUser,
   deleteUser,
   getUserArticles,
+  getUserProjects,
 };

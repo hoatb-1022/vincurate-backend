@@ -1,15 +1,19 @@
 const httpStatus = require('http-status');
-const { Article } = require('../models');
+const { Article, EditVersion } = require('../models');
+const { articleHelper } = require('../utils/helpers');
 const ApiError = require('../utils/ApiError');
+const projectService = require('./project.service');
 
-const queryArticles = async ({ query: { q, per, page, order } }) => {
+const queryArticles = async ({ query: { q, fields, per, page, order } }) => {
   const query = !q || !q.length ? '*' : q;
   const size = per || 15;
   const from = (page - 1) * size || 0;
   const _order = order || 'desc';
+  const _fields = fields ? fields.split(',') : ['*'];
   const sort = [{ createdAt: { order: _order } }];
   const searchOptions = {
     query_string: {
+      fields: _fields,
       query,
     },
   };
@@ -22,34 +26,30 @@ const queryArticles = async ({ query: { q, per, page, order } }) => {
   });
 };
 
-const uploadFile = async (files, source, user) => {
+const uploadFile = async (user, projectId, files, method) => {
   if (!files) {
     throw new ApiError(httpStatus.NOT_FOUND, 'No file uploaded');
   }
 
-  const { article } = files;
-  const newUnits = await Article.unitsFromFile(article);
-  const newArticle = new Article({
-    source,
-    description: Article.getArticlesShortDesc(newUnits),
-    units: newUnits,
-    user: user.id,
-  });
-  user.articles.push(newArticle.id);
-  newUnits.forEach((unit) => {
-    // eslint-disable-next-line no-param-reassign
-    unit.article = newArticle.id;
-  });
+  const project = await projectService.getProjectById(projectId);
+  if (!project) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Project not found');
+  }
 
-  await newArticle.save();
+  const { file } = files;
+  const { article, labels } = await articleHelper.importArticleFromFile(user, project, file, method);
+  project.articles.push(article);
+
+  await article.save();
   await user.save();
-  await newUnits.map((unit) => unit.save());
+  await project.save();
+  await labels.map((label) => label.save());
 
-  return newArticle;
+  return article;
 };
 
 const getArticleById = async (id) => {
-  return Article.findById(id).populate('user');
+  return Article.findById(id).populate(['user', 'project', 'editVersions']);
 };
 
 const exportArticleById = async (articleId) => {
@@ -92,6 +92,34 @@ const getNextArticleById = async (id) => {
   return Article.findOne({ createdAt: { $lt: article.createdAt } }).sort({ createdAt: -1 });
 };
 
+const updateArticleAnnotationsById = async (articleId, { annotations }) => {
+  const article = await getArticleById(articleId);
+  if (!article) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Article not found');
+  }
+
+  article.annotations = annotations;
+  await article.save();
+  return article;
+};
+
+const createArticleEditVersionById = async (articleId, user, { annotations }) => {
+  const article = await getArticleById(articleId);
+  if (!article) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Article not found');
+  }
+
+  const editVersion = new EditVersion();
+  editVersion.user = user.id;
+  editVersion.article = article.id;
+  editVersion.annotations = annotations;
+  article.editVersions.push(editVersion.id);
+
+  await editVersion.save();
+  await article.save();
+  return article;
+};
+
 module.exports = {
   queryArticles,
   uploadFile,
@@ -100,4 +128,6 @@ module.exports = {
   exportArticleById,
   deleteArticleById,
   getNextArticleById,
+  updateArticleAnnotationsById,
+  createArticleEditVersionById,
 };

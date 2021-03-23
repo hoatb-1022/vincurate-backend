@@ -11,10 +11,10 @@ const getArticles = catchAsync(async (req, res) => {
 const uploadFile = catchAsync(async (req, res) => {
   const {
     files,
-    body: { source },
+    body: { method, projectId },
     user,
   } = req;
-  const article = await articleService.uploadFile(files, source, user);
+  const article = await articleService.uploadFile(user, projectId, files, method);
   res.status(httpStatus.CREATED).send(article);
 });
 
@@ -49,6 +49,22 @@ const deleteArticle = catchAsync(async (req, res) => {
   res.status(httpStatus.NO_CONTENT).send();
 });
 
+const updateArticleAnnotations = catchAsync(async (req, res) => {
+  const article = await articleService.updateArticleAnnotationsById(req.params.articleId, req.body);
+  res.send(article);
+});
+
+const createArticleEditVersion = catchAsync(async (req, res) => {
+  const {
+    params: { articleId },
+    body,
+    user,
+  } = req;
+  console.log(req);
+  const article = await articleService.createArticleEditVersionById(articleId, user, body);
+  res.send(article);
+});
+
 module.exports = {
   getArticles,
   uploadFile,
@@ -57,4 +73,6 @@ module.exports = {
   exportArticle,
   getNextArticle,
   deleteArticle,
+  updateArticleAnnotations,
+  createArticleEditVersion,
 };

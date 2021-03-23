@@ -4,6 +4,7 @@ const { objectId } = require('./custom.validation');
 const getArticles = {
   query: Joi.object().keys({
     q: Joi.string(),
+    fields: Joi.string(),
     order: Joi.string(),
     per: Joi.number().integer(),
     page: Joi.number().integer(),
@@ -16,7 +17,8 @@ const uploadFile = {
     filename: Joi.string(),
   }),
   body: Joi.object().keys({
-    source: Joi.string(),
+    method: Joi.string(),
+    projectId: Joi.string().required(),
   }),
 };
 
@@ -39,9 +41,29 @@ const updateArticle = {
   body: Joi.object()
     .keys({
       title: Joi.string(),
-      source: Joi.string(),
-      category: Joi.string(),
-      visibility: Joi.string(),
+      content: Joi.string(),
+    })
+    .min(1),
+};
+
+const updateArticleAnnotations = {
+  params: Joi.object().keys({
+    articleId: Joi.required().custom(objectId),
+  }),
+  body: Joi.object()
+    .keys({
+      annotations: Joi.array().items(Joi.object()),
+    })
+    .min(1),
+};
+
+const createArticleEditVersion = {
+  params: Joi.object().keys({
+    articleId: Joi.required().custom(objectId),
+  }),
+  body: Joi.object()
+    .keys({
+      annotations: Joi.array().items(Joi.object()),
     })
     .min(1),
 };
@@ -52,4 +74,6 @@ module.exports = {
   getArticles,
   deleteArticle,
   updateArticle,
+  updateArticleAnnotations,
+  createArticleEditVersion,
 };
