@@ -57,6 +57,12 @@ const getUserArticles = async (userId) => {
   for (const p of projects) {
     // eslint-disable-next-line no-await-in-loop
     const project = await Project.findById(p.id).populate('articles');
+
+    // eslint-disable-next-line no-restricted-syntax
+    for (const a of project.articles) {
+      a.project = p;
+    }
+
     articles.push(...project.articles);
   }
 
@@ -76,5 +82,5 @@ module.exports = {
   updateUserById,
   deleteUserById,
   getUserArticles,
-  getUserProjects,
+  getUserProjects
 };

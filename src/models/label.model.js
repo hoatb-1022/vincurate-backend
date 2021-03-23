@@ -7,6 +7,7 @@ const labelSchema = mongoose.Schema(
     value: { type: String, required: true, trim: true, default: '' },
     name: { type: String, default: '' },
     shortcut: { type: String, default: '' },
+    icon: { type: String, default: '' },
     color: { type: String, required: true, trim: true, default: '#2b2b2b' },
     type: {
       type: String,

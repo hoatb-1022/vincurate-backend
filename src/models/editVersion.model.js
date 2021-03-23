@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const { toJSON, paginate } = require('./plugins');
 const Annotation = require('./annotation.model');
+const { editVersionStatuses } = require('../config/articles');
 
 const editVersionSchema = mongoose.Schema(
   {
@@ -13,6 +14,16 @@ const editVersionSchema = mongoose.Schema(
       ref: 'Article',
     },
     annotations: [Annotation.schema],
+    status: {
+      type: String,
+      enum: [
+        editVersionStatuses.REVIEWING,
+        editVersionStatuses.DECLINED,
+        editVersionStatuses.FULL_USED,
+        editVersionStatuses.PARTIAL_USED,
+      ],
+      default: editVersionStatuses.REVIEWING,
+    },
   },
   {
     timestamps: true,
