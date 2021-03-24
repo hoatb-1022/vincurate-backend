@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const { toJSON, paginate } = require('./plugins');
-const ProjectRole = require('./projectRole.model');
+const ProjectRole = require('./project-role.model');
 const { projectTypes } = require('../config/projects');
 
 const projectSchema = mongoose.Schema(

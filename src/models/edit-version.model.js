@@ -17,12 +17,12 @@ const editVersionSchema = mongoose.Schema(
     status: {
       type: String,
       enum: [
-        editVersionStatuses.REVIEWING,
+        editVersionStatuses.PENDING,
         editVersionStatuses.DECLINED,
         editVersionStatuses.FULL_USED,
         editVersionStatuses.PARTIAL_USED,
       ],
-      default: editVersionStatuses.REVIEWING,
+      default: editVersionStatuses.PENDING,
     },
   },
   {

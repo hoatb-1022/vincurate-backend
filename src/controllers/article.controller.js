@@ -60,7 +60,6 @@ const createArticleEditVersion = catchAsync(async (req, res) => {
     body,
     user,
   } = req;
-  console.log(req);
   const article = await articleService.createArticleEditVersionById(articleId, user, body);
   res.send(article);
 });

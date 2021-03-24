@@ -51,6 +51,7 @@ async function importSequenceLabelByJSONL(user, project, data, options) {
       if (!label) {
         label = new Label();
         label.value = value;
+        label.name = value; // TODO: Label real name?
         label.color = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
         label.type = labelTypes.CONCEPT;
 
