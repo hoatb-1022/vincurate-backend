@@ -22,6 +22,7 @@ function generateArticleDescription(article) {
 async function importSequenceLabelByJSONL(user, project, data, options) {
   const article = new Article();
   article.user = user.id;
+  article.lastCurator = user.id;
   article.project = project.id;
 
   const nlabels = [];

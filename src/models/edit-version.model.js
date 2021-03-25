@@ -24,6 +24,10 @@ const editVersionSchema = mongoose.Schema(
       ],
       default: editVersionStatuses.PENDING,
     },
+    lastApprover: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+    },
   },
   {
     timestamps: true,

@@ -49,7 +49,7 @@ const uploadFile = async (user, projectId, files, method) => {
 };
 
 const getArticleById = async (id) => {
-  return Article.findById(id).populate(['user', 'project', 'editVersions']);
+  return Article.findById(id).populate(['user', 'project', 'editVersions', 'lastCurator']);
 };
 
 const exportArticleById = async (articleId) => {
@@ -92,7 +92,7 @@ const getNextArticleById = async (id) => {
   return Article.findOne({ createdAt: { $lt: article.createdAt } }).sort({ createdAt: -1 });
 };
 
-const updateArticleAnnotationsById = async (articleId, { annotations }) => {
+const updateArticleAnnotationsById = async (user, articleId, { annotations }) => {
   const article = await getArticleById(articleId);
   if (!article) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Article not found');

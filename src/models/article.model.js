@@ -26,6 +26,11 @@ const articleSchema = mongoose.Schema(
         ref: 'EditVersion',
       },
     ],
+    lastCurator: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      es_select: '_id name email',
+    },
   },
   {
     timestamps: true,
