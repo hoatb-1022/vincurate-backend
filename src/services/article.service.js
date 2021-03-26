@@ -52,16 +52,16 @@ const getArticleById = async (id) => {
   return Article.findById(id).populate(['user', 'project', 'editVersions', 'lastCurator']);
 };
 
-const exportArticleById = async (articleId) => {
+const exportArticleById = async (articleId, method) => {
   const article = await getArticleById(articleId);
   if (!article) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Article not found');
   }
 
-  const fileName = `${article._id}_tokens.csv`;
-  const data = article.csvUnitsData();
+  const { data, contentType, suffix } = await articleHelper.exportArticleInFile(article, method);
+  const fileName = `${article._id}_tokens.${suffix}`;
 
-  return { fileName, data };
+  return { fileName, data, contentType };
 };
 
 const deleteArticleById = async (articleId) => {

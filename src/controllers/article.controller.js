@@ -12,7 +12,7 @@ const uploadFile = catchAsync(async (req, res) => {
   const {
     files,
     body: { method, projectId },
-    user
+    user,
   } = req;
   const article = await articleService.uploadFile(user, projectId, files, method);
   res.status(httpStatus.CREATED).send(article);
@@ -32,8 +32,12 @@ const updateArticle = catchAsync(async (req, res) => {
 });
 
 const exportArticle = catchAsync(async (req, res) => {
-  const { fileName, data } = await articleService.exportArticleById(req.params.articleId);
-  res.status(httpStatus.CREATED).header('Content-Type', 'text/csv').attachment(fileName).send(data);
+  const {
+    params: { articleId },
+    query: { method },
+  } = req;
+  const { fileName, data, contentType } = await articleService.exportArticleById(articleId, method);
+  res.status(httpStatus.CREATED).header('Content-Type', contentType).attachment(fileName).send(data);
 });
 
 const getNextArticle = catchAsync(async (req, res) => {
@@ -53,7 +57,7 @@ const updateArticleAnnotations = catchAsync(async (req, res) => {
   const {
     user,
     body,
-    params: { articleId }
+    params: { articleId },
   } = req;
   const article = await articleService.updateArticleAnnotationsById(user, articleId, body);
   res.send(article);
@@ -63,7 +67,7 @@ const createArticleEditVersion = catchAsync(async (req, res) => {
   const {
     params: { articleId },
     body,
-    user
+    user,
   } = req;
   const article = await articleService.createArticleEditVersionById(articleId, user, body);
   res.send(article);
@@ -78,5 +82,5 @@ module.exports = {
   getNextArticle,
   deleteArticle,
   updateArticleAnnotations,
-  createArticleEditVersion
+  createArticleEditVersion,
 };
