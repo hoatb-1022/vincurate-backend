@@ -19,8 +19,8 @@ const editVersionSchema = mongoose.Schema(
       enum: [
         editVersionStatuses.PENDING,
         editVersionStatuses.DECLINED,
-        editVersionStatuses.FULL_USED,
-        editVersionStatuses.PARTIAL_USED,
+        editVersionStatuses.MERGED,
+        editVersionStatuses.APPROVED,
       ],
       default: editVersionStatuses.PENDING,
     },

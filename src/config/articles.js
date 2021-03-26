@@ -6,8 +6,8 @@ const labelTypes = {
 
 const editVersionStatuses = {
   DECLINED: 'Declined',
-  PARTIAL_USED: 'Partial used',
-  FULL_USED: 'Fully used',
+  MERGED: 'Merged',
+  APPROVED: 'Approved',
   PENDING: 'Pending',
 };
 

@@ -11,6 +11,12 @@ const getEditVersion = catchAsync(async (req, res) => {
   res.send(articleEditVer);
 });
 
+const applyEditVersion = catchAsync(async (req, res) => {
+  const editVersion = await editVersionService.applyEditVersionById(req.params.editVerId, req.user, req.body);
+  res.send(editVersion);
+});
+
 module.exports = {
   getEditVersion,
+  applyEditVersion,
 };
