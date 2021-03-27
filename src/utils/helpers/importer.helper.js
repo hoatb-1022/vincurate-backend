@@ -122,6 +122,7 @@ async function importSequenceLabelByPlainText(user, project, data) {
 }
 
 const ImporterHelper = {
+  generateArticleDescription,
   importSequenceLabelByJSONL,
   importSequenceLabelByCoNLL,
   importSequenceLabelByNER,

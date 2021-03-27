@@ -3,6 +3,7 @@ const { Article, EditVersion, User } = require('../models');
 const { articleHelper } = require('../utils/helpers');
 const ApiError = require('../utils/ApiError');
 const projectService = require('./project.service');
+const importerHelper = require('../utils/helpers/importer.helper');
 
 const queryArticles = async ({ query: { q, fields, per, page, order } }) => {
   const query = !q || !q.length ? '*' : q;
@@ -85,6 +86,8 @@ const updateArticleById = async (articleId, updateBody) => {
   }
 
   Object.assign(article, updateBody);
+  if (updateBody.content) article.description = importerHelper.generateArticleDescription(article);
+
   await article.save();
   return article;
 };
