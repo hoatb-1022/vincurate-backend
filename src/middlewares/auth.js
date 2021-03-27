@@ -7,6 +7,10 @@ const verifyCallback = (req, resolve, reject, requiredRights) => async (err, use
   if (err || info || !user) {
     return reject(new ApiError(httpStatus.UNAUTHORIZED, 'Please authenticate'));
   }
+  if (!user.isActive) {
+    return reject(new ApiError(httpStatus.UNAUTHORIZED, 'You are blocked. Please contact admin for more information!'));
+  }
+
   req.user = user;
 
   if (requiredRights.length) {

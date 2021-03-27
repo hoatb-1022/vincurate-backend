@@ -46,6 +46,10 @@ const userSchema = mongoose.Schema(
         ref: 'Project',
       },
     ],
+    isActive: {
+      type: Boolean,
+      default: true,
+    },
   },
   {
     timestamps: true,

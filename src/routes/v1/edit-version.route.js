@@ -6,7 +6,14 @@ const { editVersionController } = require('../../controllers');
 
 const router = express.Router();
 
-router.route('/:editVerId').get(validate(editVersionValidation.getEditVersion), editVersionController.getEditVersion);
+router
+  .route('/:editVerId')
+  .get(validate(editVersionValidation.getEditVersion), editVersionController.getEditVersion)
+  .patch(
+    auth('manageEditVersions'),
+    validate(editVersionValidation.updateEditVersion),
+    editVersionController.updateEditVersion
+  );
 
 router.post(
   '/:editVerId/apply',

@@ -1,5 +1,5 @@
 const httpStatus = require('http-status');
-const { Article, EditVersion } = require('../models');
+const { Article, EditVersion, User } = require('../models');
 const { articleHelper } = require('../utils/helpers');
 const ApiError = require('../utils/ApiError');
 const projectService = require('./project.service');
@@ -49,7 +49,12 @@ const uploadFile = async (user, projectId, files, method) => {
 };
 
 const getArticleById = async (id) => {
-  return Article.findById(id).populate(['user', 'project', 'editVersions', 'lastCurator']);
+  const article = await Article.findById(id).populate(['user', 'project', 'editVersions', 'lastCurator']);
+
+  // eslint-disable-next-line no-restricted-syntax,no-await-in-loop
+  for (const ev of article.editVersions) ev.user = await User.findById(ev.user);
+
+  return article;
 };
 
 const exportArticleById = async (articleId, method) => {

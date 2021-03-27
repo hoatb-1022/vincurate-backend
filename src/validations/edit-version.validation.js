@@ -18,6 +18,15 @@ const getEditVersion = {
   }),
 };
 
+const updateEditVersion = {
+  params: Joi.object().keys({
+    editVerId: Joi.required().custom(objectId),
+  }),
+  body: Joi.object().keys({
+    annotations: Joi.array().items(Joi.object()).required(),
+  }),
+};
+
 const applyEditVersion = {
   params: Joi.object().keys({
     editVerId: Joi.required().custom(objectId),
@@ -32,5 +41,6 @@ const applyEditVersion = {
 module.exports = {
   createEditVersion,
   getEditVersion,
+  updateEditVersion,
   applyEditVersion,
 };

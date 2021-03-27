@@ -9,6 +9,17 @@ const getEditVersionById = async (id) => {
   return editVersion;
 };
 
+const updateEditVersionById = async (editVerId, updateBody) => {
+  const editVersion = await getEditVersionById(editVerId);
+  if (!editVersion) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Edit version not found');
+  }
+
+  Object.assign(editVersion, updateBody);
+  await editVersion.save();
+  return editVersion;
+};
+
 const applyEditVersionById = async (editVerId, user, { annotations, status }) => {
   const editVersion = await getEditVersionById(editVerId);
   if (!editVersion) {
@@ -42,5 +53,6 @@ const applyEditVersionById = async (editVerId, user, { annotations, status }) =>
 
 module.exports = {
   getEditVersionById,
+  updateEditVersionById,
   applyEditVersionById,
 };
