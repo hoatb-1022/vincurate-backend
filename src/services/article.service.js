@@ -1,5 +1,5 @@
 const httpStatus = require('http-status');
-const { Article, EditVersion, User } = require('../models');
+const { Article, EditVersion, User, Project } = require('../models');
 const { articleHelper } = require('../utils/helpers');
 const ApiError = require('../utils/ApiError');
 const projectService = require('./project.service');
@@ -93,7 +93,16 @@ const deleteArticleById = async (articleId) => {
   if (!article) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Article not found');
   }
+
+  const project = await Project.findById(article.project.id);
+  if (project) {
+    const index = project.articles.findIndex((a) => a.toString() === article.id);
+    if (index >= 0) project.articles.splice(index, 1);
+  }
+
   await article.remove();
+  await project.save();
+
   return article;
 };
 

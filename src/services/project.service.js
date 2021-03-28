@@ -1,5 +1,5 @@
 const httpStatus = require('http-status');
-const { Project, ProjectRole } = require('../models');
+const { Project, ProjectRole, User } = require('../models');
 const ApiError = require('../utils/ApiError');
 
 const queryProjects = async (filter, options) => {
@@ -35,7 +35,15 @@ const deleteProjectById = async (projectId) => {
   if (!project) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Project not found');
   }
+
+  const user = await User.findById(project.user.id);
+  if (user) {
+    const index = user.projects.findIndex((p) => p.toString() === project.id);
+    if (index >= 0) user.projects.splice(index, 1);
+  }
+
   await project.remove();
+  await user.save();
   return project;
 };
 
