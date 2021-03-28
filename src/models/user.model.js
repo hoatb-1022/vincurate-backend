@@ -60,7 +60,7 @@ const userSchema = mongoose.Schema(
 // add plugin that converts mongoose to json
 userSchema.plugin(toJSON);
 userSchema.plugin(paginate);
-userSchema.plugin(mongooseDelete, { deletedAt: true });
+userSchema.plugin(mongooseDelete, { deletedAt: true, overrideMethods: true });
 
 userSchema.statics.isEmailTaken = async function (email, excludeUserId) {
   const user = await this.findOne({ email, _id: { $ne: excludeUserId } });

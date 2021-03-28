@@ -32,7 +32,7 @@ const labelSchema = mongoose.Schema(
 
 labelSchema.plugin(toJSON);
 labelSchema.plugin(paginate);
-labelSchema.plugin(mongooseDelete, { deletedAt: true });
+labelSchema.plugin(mongooseDelete, { deletedAt: true, overrideMethods: true });
 
 labelSchema.statics.bioConceptLabelsData = function () {
   return [

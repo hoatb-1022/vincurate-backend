@@ -22,7 +22,10 @@ const queryArticles = async ({ query: { q, fields, per, page, order } }) => {
   return new Promise((resolve, reject) => {
     Article.search(searchOptions, { sort, from, size }, (err, results) => {
       if (err) reject(err);
-      else resolve(results);
+      else {
+        console.log(results);
+        resolve(results);
+      }
     });
   });
 };
@@ -94,6 +97,7 @@ const deleteArticleById = async (articleId) => {
     throw new ApiError(httpStatus.NOT_FOUND, 'Article not found');
   }
   await article.delete();
+  await article.index();
   return article;
 };
 

@@ -40,7 +40,7 @@ const projectSchema = mongoose.Schema(
 
 projectSchema.plugin(toJSON);
 projectSchema.plugin(paginate);
-projectSchema.plugin(mongooseDelete, { deletedAt: true });
+projectSchema.plugin(mongooseDelete, { deletedAt: true, overrideMethods: true });
 
 const Project = mongoose.model('Project', projectSchema);
 

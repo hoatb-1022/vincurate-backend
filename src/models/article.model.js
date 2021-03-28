@@ -43,7 +43,7 @@ const articleSchema = mongoose.Schema(
 
 articleSchema.plugin(toJSON);
 articleSchema.plugin(paginate);
-articleSchema.plugin(mongooseDelete, { deletedAt: true });
+articleSchema.plugin(mongooseDelete, { deletedAt: true, overrideMethods: true });
 
 articleSchema.plugin(mongoosastic, {
   esClient: elasticClient,
