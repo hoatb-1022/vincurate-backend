@@ -93,7 +93,7 @@ const deleteArticleById = async (articleId) => {
   if (!article) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Article not found');
   }
-  await article.remove();
+  await article.delete();
   return article;
 };
 

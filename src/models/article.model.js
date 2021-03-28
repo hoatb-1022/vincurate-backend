@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const mongoosastic = require('mongoosastic');
+const mongooseDelete = require('mongoose-delete');
 const { toJSON, paginate } = require('./plugins');
 const User = require('./user.model');
 const Annotation = require('./annotation.model');
@@ -42,6 +43,7 @@ const articleSchema = mongoose.Schema(
 
 articleSchema.plugin(toJSON);
 articleSchema.plugin(paginate);
+articleSchema.plugin(mongooseDelete, { deletedAt: true });
 
 articleSchema.plugin(mongoosastic, {
   esClient: elasticClient,

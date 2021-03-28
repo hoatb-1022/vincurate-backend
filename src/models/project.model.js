@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const mongooseDelete = require('mongoose-delete');
 const { toJSON, paginate } = require('./plugins');
 const ProjectRole = require('./project-role.model');
 const { projectTypes } = require('../config/projects');
@@ -39,6 +40,7 @@ const projectSchema = mongoose.Schema(
 
 projectSchema.plugin(toJSON);
 projectSchema.plugin(paginate);
+projectSchema.plugin(mongooseDelete, { deletedAt: true });
 
 const Project = mongoose.model('Project', projectSchema);
 

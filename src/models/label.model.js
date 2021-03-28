@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const mongooseDelete = require('mongoose-delete');
 const { toJSON, paginate } = require('./plugins');
 const { labelTypes } = require('../config/articles');
 
@@ -31,6 +32,7 @@ const labelSchema = mongoose.Schema(
 
 labelSchema.plugin(toJSON);
 labelSchema.plugin(paginate);
+labelSchema.plugin(mongooseDelete, { deletedAt: true });
 
 labelSchema.statics.bioConceptLabelsData = function () {
   return [
