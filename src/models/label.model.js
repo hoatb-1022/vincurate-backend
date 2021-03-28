@@ -4,7 +4,7 @@ const { labelTypes } = require('../config/articles');
 
 const labelSchema = mongoose.Schema(
   {
-    value: { type: String, required: true, trim: true, default: '' },
+    value: { type: String, required: true, trim: true },
     name: { type: String, default: '' },
     shortcut: { type: String, default: '' },
     icon: { type: String, default: '' },
@@ -14,6 +14,14 @@ const labelSchema = mongoose.Schema(
       required: true,
       enum: [labelTypes.CONCEPT, labelTypes.CATEGORY, labelTypes.TRANSLATION],
       default: labelTypes.CONCEPT,
+    },
+    isSystem: {
+      type: Boolean,
+      default: false,
+    },
+    creator: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
     },
   },
   {

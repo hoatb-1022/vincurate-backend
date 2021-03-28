@@ -70,6 +70,24 @@ const exportArticleById = async (articleId, method) => {
   return { fileName, data, contentType };
 };
 
+const createArticle = async (user, articleBody) => {
+  const project = await projectService.getProjectById(articleBody.projectId);
+  if (!project) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Project not found');
+  }
+
+  const article = await Article.create({
+    user,
+    project,
+    ...articleBody,
+  });
+
+  project.articles.push(article.id);
+  await project.save();
+
+  return article;
+};
+
 const deleteArticleById = async (articleId) => {
   const article = await getArticleById(articleId);
   if (!article) {
@@ -107,6 +125,8 @@ const updateArticleAnnotationsById = async (user, articleId, { annotations }) =>
   }
 
   article.annotations = annotations;
+  article.description = importerHelper.generateArticleDescription(article);
+
   await article.save();
   return article;
 };
@@ -134,6 +154,7 @@ module.exports = {
   getArticleById,
   updateArticleById,
   exportArticleById,
+  createArticle,
   deleteArticleById,
   getNextArticleById,
   updateArticleAnnotationsById,

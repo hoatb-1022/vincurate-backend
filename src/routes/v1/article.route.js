@@ -6,7 +6,11 @@ const { articleController } = require('../../controllers');
 
 const router = express.Router();
 
-router.get('/', validate(articleValidation.getArticles), articleController.getArticles);
+router
+  .route('/')
+  .post(auth('manageArticles'), validate(articleValidation.createArticle), articleController.createArticle)
+  .get(validate(articleValidation.getArticles), articleController.getArticles);
+
 router.get('/:articleId/next', validate(articleValidation.getArticle), articleController.getNextArticle);
 router.get('/:articleId/export', validate(articleValidation.getArticle), articleController.exportArticle);
 router.patch(

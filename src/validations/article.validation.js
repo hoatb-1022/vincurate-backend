@@ -28,6 +28,14 @@ const getArticle = {
   }),
 };
 
+const createArticle = {
+  body: Joi.object().keys({
+    title: Joi.string().required(),
+    content: Joi.string().required(),
+    projectId: Joi.string().custom(objectId).required(),
+  }),
+};
+
 const deleteArticle = {
   params: Joi.object().keys({
     articleId: Joi.string().custom(objectId),
@@ -61,6 +69,7 @@ module.exports = {
   uploadFile,
   getArticle,
   getArticles,
+  createArticle,
   deleteArticle,
   updateArticle,
   updateArticleAnnotations,

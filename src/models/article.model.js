@@ -7,14 +7,15 @@ const { elasticClient } = require('../config/config');
 
 const articleSchema = mongoose.Schema(
   {
-    title: { type: String, default: '' },
-    description: { type: String, default: '' },
+    title: { type: String, default: '', es_indexed: true },
+    description: { type: String, default: '', es_indexed: true },
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
+      es_indexed: true,
       es_select: '_id name email',
     },
-    content: { type: String, default: '' },
+    content: { type: String, default: '', es_indexed: true },
     annotations: [Annotation.schema],
     project: {
       type: mongoose.Schema.Types.ObjectId,
@@ -31,6 +32,8 @@ const articleSchema = mongoose.Schema(
       ref: 'User',
       es_select: '_id name email',
     },
+    createdAt: { type: Date, es_type: 'date', es_indexed: true },
+    updatedAt: { type: Date, es_type: 'date', es_indexed: true },
   },
   {
     timestamps: true,

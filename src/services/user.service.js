@@ -1,5 +1,5 @@
 const httpStatus = require('http-status');
-const { User, Project } = require('../models');
+const { User, Project, Label } = require('../models');
 const ApiError = require('../utils/ApiError');
 
 const createUser = async (userBody) => {
@@ -73,6 +73,10 @@ const getUserProjects = async (userId) => {
   return User.findById(userId).populate('projects');
 };
 
+const getUserLabels = async (userId) => {
+  return Label.find({ creator: userId }).populate('creator');
+};
+
 module.exports = {
   createUser,
   getAllUsers,
@@ -82,5 +86,6 @@ module.exports = {
   updateUserById,
   deleteUserById,
   getUserArticles,
-  getUserProjects
+  getUserProjects,
+  getUserLabels,
 };

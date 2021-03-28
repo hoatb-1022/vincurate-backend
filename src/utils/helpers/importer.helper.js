@@ -1,5 +1,6 @@
 const neatCsv = require('neat-csv');
 const { Article, Annotation, Label } = require('../../models');
+const { getAllLabels } = require('../../services/label.service');
 const { convertCONLLToJSONL, convertPlainTextToJSONL } = require('./converter.helper');
 const { labelTypes } = require('../../config/articles');
 
@@ -26,7 +27,7 @@ async function importSequenceLabelByJSONL(user, project, data, options) {
   article.project = project.id;
 
   const nlabels = [];
-  const allLabels = [];
+  const allLabels = await getAllLabels();
   const sentences = [];
   let currentOffset = 0;
 
@@ -55,12 +56,15 @@ async function importSequenceLabelByJSONL(user, project, data, options) {
         label.name = value; // TODO: Label real name?
         label.color = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
         label.type = labelTypes.CONCEPT;
+        label.creator = user.id;
 
         nlabels.push(label);
       }
 
-      annotation.label = label;
+      const labelProjIdx = project.labels.findIndex((l) => l.id === label.id);
+      if (labelProjIdx < 0) project.labels.push(label);
 
+      annotation.label = label;
       allLabels.push(label);
       article.annotations.push(annotation);
     }

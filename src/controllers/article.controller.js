@@ -18,6 +18,11 @@ const uploadFile = catchAsync(async (req, res) => {
   res.status(httpStatus.CREATED).send(article);
 });
 
+const createArticle = catchAsync(async (req, res) => {
+  const article = await articleService.createArticle(req.user, req.body);
+  res.status(httpStatus.CREATED).send(article);
+});
+
 const getArticle = catchAsync(async (req, res) => {
   const article = await articleService.getArticleById(req.params.articleId);
   if (!article) {
@@ -79,6 +84,7 @@ module.exports = {
   getArticle,
   updateArticle,
   exportArticle,
+  createArticle,
   getNextArticle,
   deleteArticle,
   updateArticleAnnotations,
