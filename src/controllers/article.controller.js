@@ -68,13 +68,13 @@ const updateArticleAnnotations = catchAsync(async (req, res) => {
   res.send(article);
 });
 
-const createArticleEditVersion = catchAsync(async (req, res) => {
+const createArticleSeqLabelVersion = catchAsync(async (req, res) => {
   const {
     params: { articleId },
     body,
     user,
   } = req;
-  const article = await articleService.createArticleEditVersionById(articleId, user, body);
+  const article = await articleService.createArticleSeqLabelVersionById(articleId, user, body);
   res.send(article);
 });
 
@@ -88,5 +88,5 @@ module.exports = {
   getNextArticle,
   deleteArticle,
   updateArticleAnnotations,
-  createArticleEditVersion,
+  createArticleSeqLabelVersion,
 };

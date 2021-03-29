@@ -21,10 +21,10 @@ const articleSchema = mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Project',
     },
-    editVersions: [
+    seqLabelVersions: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'EditVersion',
+        ref: 'SeqLabelVersion',
       },
     ],
     lastCurator: {

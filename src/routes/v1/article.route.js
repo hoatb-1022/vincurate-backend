@@ -19,10 +19,10 @@ router.patch(
   articleController.updateArticleAnnotations
 );
 router.post(
-  '/:articleId/create-edit-version',
+  '/:articleId/create-seq-label-version',
   auth('manageArticles'),
-  validate(articleValidation.createArticleEditVersion),
-  articleController.createArticleEditVersion
+  validate(articleValidation.createArticleSeqLabelVersion),
+  articleController.createArticleSeqLabelVersion
 );
 router.route('/upload').post(auth('uploadFile'), validate(articleValidation.uploadFile), articleController.uploadFile);
 router

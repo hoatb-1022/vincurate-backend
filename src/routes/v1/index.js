@@ -4,7 +4,7 @@ const userRoute = require('./user.route');
 const articleRoute = require('./article.route');
 const labelRoute = require('./label.route');
 const projectRoute = require('./project.route');
-const editVersionRoute = require('./edit-version.route');
+const seqLabelVersionRoute = require('./seq-label-version.route');
 const docsRoute = require('./docs.route');
 const config = require('../../config/config');
 
@@ -32,8 +32,8 @@ const defaultRoutes = [
     route: projectRoute,
   },
   {
-    path: '/edit-versions',
-    route: editVersionRoute,
+    path: '/seq-label-versions',
+    route: seqLabelVersionRoute,
   },
 ];
 

@@ -1,9 +1,9 @@
 const mongoose = require('mongoose');
 const { toJSON, paginate } = require('./plugins');
 const Annotation = require('./annotation.model');
-const { editVersionStatuses } = require('../config/articles');
+const { seqLabelVersionStatuses } = require('../config/articles');
 
-const editVersionSchema = mongoose.Schema(
+const seqLabelVersionSchema = mongoose.Schema(
   {
     user: {
       type: mongoose.Schema.Types.ObjectId,
@@ -16,13 +16,8 @@ const editVersionSchema = mongoose.Schema(
     annotations: [Annotation.schema],
     status: {
       type: String,
-      enum: [
-        editVersionStatuses.PENDING,
-        editVersionStatuses.DECLINED,
-        editVersionStatuses.MERGED,
-        editVersionStatuses.APPROVED,
-      ],
-      default: editVersionStatuses.PENDING,
+      enum: Object.values(seqLabelVersionStatuses),
+      default: seqLabelVersionStatuses.PENDING,
     },
     lastApprover: {
       type: mongoose.Schema.Types.ObjectId,
@@ -34,9 +29,9 @@ const editVersionSchema = mongoose.Schema(
   }
 );
 
-editVersionSchema.plugin(toJSON);
-editVersionSchema.plugin(paginate);
+seqLabelVersionSchema.plugin(toJSON);
+seqLabelVersionSchema.plugin(paginate);
 
-const EditVersion = mongoose.model('EditVersion', editVersionSchema);
+const SeqLabelVersion = mongoose.model('SeqLabelVersion', seqLabelVersionSchema);
 
-module.exports = EditVersion;
+module.exports = SeqLabelVersion;
