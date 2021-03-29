@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 const { toJSON, paginate } = require('./plugins');
 const ProjectRole = require('./project-role.model');
-const { projectTypes } = require('../config/projects');
 
 const projectSchema = mongoose.Schema(
   {
@@ -20,11 +19,6 @@ const projectSchema = mongoose.Schema(
         ref: 'Article',
       },
     ],
-    type: {
-      type: String,
-      enum: [projectTypes.SEQ_2_SEQ, projectTypes.SEQ_LABEL, projectTypes.DOC_CLASS],
-      default: projectTypes.SEQ_LABEL,
-    },
     labels: [
       {
         type: mongoose.Schema.Types.ObjectId,

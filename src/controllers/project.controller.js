@@ -5,7 +5,7 @@ const ApiError = require('../utils/ApiError');
 const { projectService } = require('../services');
 
 const getProjects = catchAsync(async (req, res) => {
-  const filter = pick(req.query, ['title', 'type']);
+  const filter = pick(req.query, ['title']);
   const options = pick(req.query, ['sortBy', 'limit', 'page']);
   const result = await projectService.queryProjects(filter, options);
   res.send(result);

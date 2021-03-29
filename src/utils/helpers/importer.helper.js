@@ -2,7 +2,6 @@ const neatCsv = require('neat-csv');
 const { Article, Annotation, Label } = require('../../models');
 const { getAllLabels } = require('../../services/label.service');
 const { convertCONLLToJSONL, convertPlainTextToJSONL } = require('./converter.helper');
-const { labelTypes } = require('../../config/articles');
 
 function generateArticleDescription(article) {
   const limitCharacter = 250;
@@ -55,7 +54,6 @@ async function importSequenceLabelByJSONL(user, project, data, options) {
         label.value = value;
         label.name = value; // TODO: Label real name?
         label.color = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
-        label.type = labelTypes.CONCEPT;
         label.creator = user.id;
 
         nlabels.push(label);

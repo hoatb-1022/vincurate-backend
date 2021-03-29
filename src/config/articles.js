@@ -1,9 +1,3 @@
-const labelTypes = {
-  CONCEPT: 'Concept',
-  TRANSLATION: 'Translation',
-  CATEGORY: 'Category',
-};
-
 const seqLabelVersionStatuses = {
   DECLINED: 'Declined',
   MERGED: 'Merged',
@@ -12,6 +6,5 @@ const seqLabelVersionStatuses = {
 };
 
 module.exports = {
-  labelTypes,
   seqLabelVersionStatuses,
 };
