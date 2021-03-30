@@ -1,7 +1,7 @@
 const Joi = require('joi');
 const { objectId } = require('./custom.validation');
 
-const createEditVersion = {
+const createSeqLabelVersion = {
   params: Joi.object().keys({
     articleId: Joi.required().custom(objectId),
   }),
@@ -12,24 +12,24 @@ const createEditVersion = {
     .min(1),
 };
 
-const getEditVersion = {
+const getSeqLabelVersion = {
   params: Joi.object().keys({
-    editVerId: Joi.string().custom(objectId),
+    seqLabelVerId: Joi.string().custom(objectId),
   }),
 };
 
-const updateEditVersion = {
+const updateSeqLabelVersion = {
   params: Joi.object().keys({
-    editVerId: Joi.required().custom(objectId),
+    seqLabelVerId: Joi.required().custom(objectId),
   }),
   body: Joi.object().keys({
     annotations: Joi.array().items(Joi.object()).required(),
   }),
 };
 
-const applyEditVersion = {
+const applySeqLabelVersion = {
   params: Joi.object().keys({
-    editVerId: Joi.required().custom(objectId),
+    seqLabelVerId: Joi.required().custom(objectId),
   }),
   body: Joi.object().keys({
     status: Joi.string().required(),
@@ -39,8 +39,8 @@ const applyEditVersion = {
 };
 
 module.exports = {
-  createEditVersion,
-  getEditVersion,
-  updateEditVersion,
-  applyEditVersion,
+  createSeqLabelVersion,
+  getSeqLabelVersion,
+  updateSeqLabelVersion,
+  applySeqLabelVersion,
 };

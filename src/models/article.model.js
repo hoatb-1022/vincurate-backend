@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const mongoosastic = require('mongoosastic');
 const { toJSON, paginate } = require('./plugins');
 const User = require('./user.model');
+const Project = require('./project.model');
 const Annotation = require('./annotation.model');
 const { elasticClient } = require('../config/config');
 
@@ -20,11 +21,13 @@ const articleSchema = mongoose.Schema(
     project: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Project',
+      es_indexed: true,
+      es_select: '_id title',
     },
-    editVersions: [
+    seqLabelVersions: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'EditVersion',
+        ref: 'SeqLabelVersion',
       },
     ],
     lastCurator: {
@@ -51,6 +54,12 @@ articleSchema.plugin(mongoosastic, {
       model: 'User',
       schema: User.schema,
       select: '_id name email',
+    },
+    {
+      path: 'project',
+      model: 'Project',
+      schema: Project.schema,
+      select: '_id title',
     },
   ],
 });

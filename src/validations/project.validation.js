@@ -4,7 +4,6 @@ const { objectId } = require('./custom.validation');
 const createProject = {
   body: Joi.object().keys({
     title: Joi.string().required(),
-    type: Joi.string().required(),
     owner: Joi.string().custom(objectId).required(),
     roles: Joi.array().items(
       Joi.object().keys({
@@ -19,7 +18,6 @@ const createProject = {
 const getProjects = {
   query: Joi.object().keys({
     title: Joi.string(),
-    type: Joi.string(),
     sortBy: Joi.string(),
     limit: Joi.number().integer(),
     page: Joi.number().integer(),
@@ -38,7 +36,6 @@ const updateProject = {
   }),
   body: Joi.object().keys({
     title: Joi.string().required(),
-    type: Joi.string().required(),
     owner: Joi.string().custom(objectId).required(),
     roles: Joi.array().items(
       Joi.object().keys({

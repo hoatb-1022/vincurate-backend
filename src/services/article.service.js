@@ -1,5 +1,5 @@
 const httpStatus = require('http-status');
-const { Article, EditVersion, User, Project } = require('../models');
+const { Article, SeqLabelVersion, User, Project } = require('../models');
 const { articleHelper } = require('../utils/helpers');
 const ApiError = require('../utils/ApiError');
 const projectService = require('./project.service');
@@ -50,10 +50,10 @@ const uploadFile = async (user, projectId, files, method) => {
 };
 
 const getArticleById = async (id) => {
-  const article = await Article.findById(id).populate(['user', 'project', 'editVersions', 'lastCurator']);
+  const article = await Article.findById(id).populate(['user', 'project', 'seqLabelVersions', 'lastCurator']);
 
   // eslint-disable-next-line no-restricted-syntax,no-await-in-loop
-  for (const ev of article.editVersions) ev.user = await User.findById(ev.user);
+  for (const sl of article.seqLabelVersions) sl.user = await User.findById(sl.user);
 
   return article;
 };
@@ -140,19 +140,19 @@ const updateArticleAnnotationsById = async (user, articleId, { annotations }) =>
   return article;
 };
 
-const createArticleEditVersionById = async (articleId, user, { annotations }) => {
+const createArticleSeqLabelVersionById = async (articleId, user, { annotations }) => {
   const article = await getArticleById(articleId);
   if (!article) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Article not found');
   }
 
-  const editVersion = new EditVersion();
-  editVersion.user = user.id;
-  editVersion.article = article.id;
-  editVersion.annotations = annotations;
-  article.editVersions.push(editVersion.id);
+  const seqLabelVersion = new SeqLabelVersion();
+  seqLabelVersion.user = user.id;
+  seqLabelVersion.article = article.id;
+  seqLabelVersion.annotations = annotations;
+  article.seqLabelVersions.push(seqLabelVersion.id);
 
-  await editVersion.save();
+  await seqLabelVersion.save();
   await article.save();
   return article;
 };
@@ -167,5 +167,5 @@ module.exports = {
   deleteArticleById,
   getNextArticleById,
   updateArticleAnnotationsById,
-  createArticleEditVersionById,
+  createArticleSeqLabelVersionById,
 };

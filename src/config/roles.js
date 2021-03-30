@@ -6,7 +6,7 @@ const userRights = [
   'manageArticles',
   'manageProjects',
   'getProjects',
-  'manageEditVersions',
+  'manageSeqLabelVersions',
   'manageLabels',
 ];
 const adminRights = [...userRights, 'manageUsers'];

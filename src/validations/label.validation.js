@@ -7,7 +7,6 @@ const createLabel = {
     name: Joi.string().allow(''),
     shortcut: Joi.string().allow(''),
     icon: Joi.string().allow(''),
-    type: Joi.string().required(),
     color: Joi.string(),
   }),
 };

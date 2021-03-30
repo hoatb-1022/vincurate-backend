@@ -1,9 +1,3 @@
-const projectTypes = {
-  SEQ_2_SEQ: 'Sequence to Sequence',
-  SEQ_LABEL: 'Sequence Labeling',
-  DOC_CLASS: 'Document Classification',
-};
-
 const projectRoles = {
   ANNOTATOR: 'Annotator',
   APPROVER: 'Approver',
@@ -11,6 +5,5 @@ const projectRoles = {
 };
 
 module.exports = {
-  projectTypes,
   projectRoles,
 };

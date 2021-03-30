@@ -1,10 +1,4 @@
-const labelTypes = {
-  CONCEPT: 'Concept',
-  TRANSLATION: 'Translation',
-  CATEGORY: 'Category',
-};
-
-const editVersionStatuses = {
+const seqLabelVersionStatuses = {
   DECLINED: 'Declined',
   MERGED: 'Merged',
   APPROVED: 'Approved',
@@ -12,6 +6,5 @@ const editVersionStatuses = {
 };
 
 module.exports = {
-  labelTypes,
-  editVersionStatuses,
+  seqLabelVersionStatuses,
 };
