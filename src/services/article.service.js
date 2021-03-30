@@ -157,6 +157,23 @@ const createArticleSeqLabelVersionById = async (articleId, user, { annotations }
   return article;
 };
 
+const createArticleCategoryVersionById = async (articleId, user, { categories }) => {
+  const article = await getArticleById(articleId);
+  if (!article) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Article not found');
+  }
+
+  const categoryVersion = new SeqLabelVersion();
+  categoryVersion.user = user.id;
+  categoryVersion.article = article.id;
+  categoryVersion.categories = categories;
+  article.categoryVersions.push(categoryVersion.id);
+
+  await categoryVersion.save();
+  await article.save();
+  return article;
+};
+
 module.exports = {
   queryArticles,
   uploadFile,
@@ -168,4 +185,5 @@ module.exports = {
   getNextArticleById,
   updateArticleAnnotationsById,
   createArticleSeqLabelVersionById,
+  createArticleCategoryVersionById,
 };

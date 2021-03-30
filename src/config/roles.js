@@ -7,7 +7,9 @@ const userRights = [
   'manageProjects',
   'getProjects',
   'manageSeqLabelVersions',
+  'manageCategoryVersions',
   'manageLabels',
+  'manageCategories',
 ];
 const adminRights = [...userRights, 'manageUsers'];
 
@@ -17,5 +19,5 @@ roleRights.set(roles[1], adminRights);
 
 module.exports = {
   roles,
-  roleRights,
+  roleRights
 };

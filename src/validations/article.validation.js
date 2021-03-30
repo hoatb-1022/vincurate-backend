@@ -76,6 +76,17 @@ const createArticleSeqLabelVersion = {
     .min(1),
 };
 
+const createArticleCategoryVersion = {
+  params: Joi.object().keys({
+    articleId: Joi.required().custom(objectId),
+  }),
+  body: Joi.object()
+    .keys({
+      categories: Joi.array().items(Joi.object()),
+    })
+    .min(1),
+};
+
 module.exports = {
   uploadFile,
   getArticle,
@@ -85,4 +96,5 @@ module.exports = {
   updateArticle,
   updateArticleAnnotations,
   createArticleSeqLabelVersion,
+  createArticleCategoryVersion,
 };

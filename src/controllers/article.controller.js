@@ -78,6 +78,16 @@ const createArticleSeqLabelVersion = catchAsync(async (req, res) => {
   res.send(article);
 });
 
+const createArticleCategoryVersion = catchAsync(async (req, res) => {
+  const {
+    params: { articleId },
+    body,
+    user,
+  } = req;
+  const article = await articleService.createArticleCategoryVersionById(articleId, user, body);
+  res.send(article);
+});
+
 module.exports = {
   getArticles,
   uploadFile,
@@ -89,4 +99,5 @@ module.exports = {
   deleteArticle,
   updateArticleAnnotations,
   createArticleSeqLabelVersion,
+  createArticleCategoryVersion
 };
