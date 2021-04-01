@@ -25,6 +25,12 @@ const projectSchema = mongoose.Schema(
         ref: 'Label',
       },
     ],
+    categories: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Category',
+      },
+    ],
   },
   {
     timestamps: true,

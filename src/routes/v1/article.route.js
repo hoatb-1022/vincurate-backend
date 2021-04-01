@@ -18,6 +18,11 @@ router.patch(
   validate(articleValidation.updateArticleAnnotations),
   articleController.updateArticleAnnotations
 );
+router.patch(
+  '/:articleId/update-categories',
+  validate(articleValidation.updateArticleCategories),
+  articleController.updateArticleCategories
+);
 router.post(
   '/:articleId/create-seq-label-version',
   auth('manageSeqLabelVersions'),

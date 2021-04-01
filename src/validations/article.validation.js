@@ -65,6 +65,17 @@ const updateArticleAnnotations = {
     .min(1),
 };
 
+const updateArticleCategories = {
+  params: Joi.object().keys({
+    articleId: Joi.required().custom(objectId),
+  }),
+  body: Joi.object()
+    .keys({
+      categories: Joi.array().items(Joi.object()),
+    })
+    .min(1),
+};
+
 const createArticleSeqLabelVersion = {
   params: Joi.object().keys({
     articleId: Joi.required().custom(objectId),
@@ -95,6 +106,7 @@ module.exports = {
   deleteArticle,
   updateArticle,
   updateArticleAnnotations,
+  updateArticleCategories,
   createArticleSeqLabelVersion,
   createArticleCategoryVersion,
 };
