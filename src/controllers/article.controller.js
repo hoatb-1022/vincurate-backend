@@ -68,6 +68,16 @@ const updateArticleAnnotations = catchAsync(async (req, res) => {
   res.send(article);
 });
 
+const updateArticleCategories = catchAsync(async (req, res) => {
+  const {
+    user,
+    body,
+    params: { articleId },
+  } = req;
+  const article = await articleService.updateArticleCategoriesById(user, articleId, body);
+  res.send(article);
+});
+
 const createArticleSeqLabelVersion = catchAsync(async (req, res) => {
   const {
     params: { articleId },
@@ -75,6 +85,16 @@ const createArticleSeqLabelVersion = catchAsync(async (req, res) => {
     user,
   } = req;
   const article = await articleService.createArticleSeqLabelVersionById(articleId, user, body);
+  res.send(article);
+});
+
+const createArticleCategoryVersion = catchAsync(async (req, res) => {
+  const {
+    params: { articleId },
+    body,
+    user,
+  } = req;
+  const article = await articleService.createArticleCategoryVersionById(articleId, user, body);
   res.send(article);
 });
 
@@ -88,5 +108,7 @@ module.exports = {
   getNextArticle,
   deleteArticle,
   updateArticleAnnotations,
+  updateArticleCategories,
   createArticleSeqLabelVersion,
+  createArticleCategoryVersion,
 };

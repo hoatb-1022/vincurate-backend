@@ -1,7 +1,7 @@
 const httpStatus = require('http-status');
 const { SeqLabelVersion, User, Article } = require('../models');
 const ApiError = require('../utils/ApiError');
-const { seqLabelVersionStatuses } = require('../config/articles');
+const { versionStatuses } = require('../config/articles');
 
 const getSeqLabelVersionById = async (id) => {
   const seqLabelVersion = await SeqLabelVersion.findById(id).populate(['user', 'article', 'lastApprover']);
@@ -28,11 +28,11 @@ const applySeqLabelVersionById = async (seqLabelVerId, user, { annotations, stat
 
   if (status) {
     switch (status) {
-      case seqLabelVersionStatuses.DECLINED:
+      case versionStatuses.DECLINED:
         seqLabelVersion.lastApprover = user;
         break;
-      case seqLabelVersionStatuses.APPROVED:
-      case seqLabelVersionStatuses.MERGED:
+      case versionStatuses.APPROVED:
+      case versionStatuses.MERGED:
         {
           const article = await Article.findById(seqLabelVersion.article.id);
           article.annotations = annotations;

@@ -18,11 +18,22 @@ router.patch(
   validate(articleValidation.updateArticleAnnotations),
   articleController.updateArticleAnnotations
 );
+router.patch(
+  '/:articleId/update-categories',
+  validate(articleValidation.updateArticleCategories),
+  articleController.updateArticleCategories
+);
 router.post(
   '/:articleId/create-seq-label-version',
-  auth('manageArticles'),
+  auth('manageSeqLabelVersions'),
   validate(articleValidation.createArticleSeqLabelVersion),
   articleController.createArticleSeqLabelVersion
+);
+router.post(
+  '/:articleId/create-category-version',
+  auth('manageCategoryVersions'),
+  validate(articleValidation.createArticleCategoryVersion),
+  articleController.createArticleCategoryVersion
 );
 router.route('/upload').post(auth('uploadFile'), validate(articleValidation.uploadFile), articleController.uploadFile);
 router

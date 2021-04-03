@@ -1,5 +1,5 @@
 const httpStatus = require('http-status');
-const { Article, SeqLabelVersion, User, Project } = require('../models');
+const { Article, SeqLabelVersion, CategoryVersion, User, Project } = require('../models');
 const { articleHelper } = require('../utils/helpers');
 const ApiError = require('../utils/ApiError');
 const projectService = require('./project.service');
@@ -50,10 +50,18 @@ const uploadFile = async (user, projectId, files, method) => {
 };
 
 const getArticleById = async (id) => {
-  const article = await Article.findById(id).populate(['user', 'project', 'seqLabelVersions', 'lastCurator']);
+  const article = await Article.findById(id).populate([
+    'user',
+    'project',
+    'seqLabelVersions',
+    'categoryVersions',
+    'lastCurator',
+  ]);
 
   // eslint-disable-next-line no-restricted-syntax,no-await-in-loop
   for (const sl of article.seqLabelVersions) sl.user = await User.findById(sl.user);
+  // eslint-disable-next-line no-restricted-syntax,no-await-in-loop
+  for (const c of article.categoryVersions) c.user = await User.findById(c.user);
 
   return article;
 };
@@ -140,6 +148,18 @@ const updateArticleAnnotationsById = async (user, articleId, { annotations }) =>
   return article;
 };
 
+const updateArticleCategoriesById = async (user, articleId, { categories }) => {
+  const article = await getArticleById(articleId);
+  if (!article) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Article not found');
+  }
+
+  article.categories = categories;
+
+  await article.save();
+  return article;
+};
+
 const createArticleSeqLabelVersionById = async (articleId, user, { annotations }) => {
   const article = await getArticleById(articleId);
   if (!article) {
@@ -157,6 +177,23 @@ const createArticleSeqLabelVersionById = async (articleId, user, { annotations }
   return article;
 };
 
+const createArticleCategoryVersionById = async (articleId, user, { categories }) => {
+  const article = await getArticleById(articleId);
+  if (!article) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Article not found');
+  }
+
+  const categoryVersion = new CategoryVersion();
+  categoryVersion.user = user.id;
+  categoryVersion.article = article.id;
+  categoryVersion.categories = categories;
+  article.categoryVersions.push(categoryVersion.id);
+
+  await categoryVersion.save();
+  await article.save();
+  return article;
+};
+
 module.exports = {
   queryArticles,
   uploadFile,
@@ -167,5 +204,7 @@ module.exports = {
   deleteArticleById,
   getNextArticleById,
   updateArticleAnnotationsById,
+  updateArticleCategoriesById,
   createArticleSeqLabelVersionById,
+  createArticleCategoryVersionById,
 };

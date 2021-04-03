@@ -1,5 +1,5 @@
 const httpStatus = require('http-status');
-const { User, Project, Label } = require('../models');
+const { User, Label, Article, Category } = require('../models');
 const ApiError = require('../utils/ApiError');
 
 const createUser = async (userBody) => {
@@ -51,22 +51,7 @@ const deleteUserById = async (userId) => {
 };
 
 const getUserArticles = async (userId) => {
-  const { projects } = await User.findById(userId).populate('projects');
-  const articles = [];
-  // eslint-disable-next-line no-restricted-syntax
-  for (const p of projects) {
-    // eslint-disable-next-line no-await-in-loop
-    const project = await Project.findById(p.id).populate('articles');
-
-    // eslint-disable-next-line no-restricted-syntax
-    for (const a of project.articles) {
-      a.project = p;
-    }
-
-    articles.push(...project.articles);
-  }
-
-  return articles;
+  return Article.find({ user: userId }).populate(['user', 'project']);
 };
 
 const getUserProjects = async (userId) => {
@@ -75,6 +60,10 @@ const getUserProjects = async (userId) => {
 
 const getUserLabels = async (userId) => {
   return Label.find({ creator: userId }).populate('creator');
+};
+
+const getUserCategories = async (userId) => {
+  return Category.find({ creator: userId }).populate('creator');
 };
 
 module.exports = {
@@ -88,4 +77,5 @@ module.exports = {
   getUserArticles,
   getUserProjects,
   getUserLabels,
+  getUserCategories,
 };

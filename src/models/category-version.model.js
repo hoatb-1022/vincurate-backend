@@ -1,9 +1,9 @@
 const mongoose = require('mongoose');
 const { toJSON, paginate } = require('./plugins');
-const Annotation = require('./annotation.model');
+const Category = require('./category.model');
 const { versionStatuses } = require('../config/articles');
 
-const seqLabelVersionSchema = mongoose.Schema(
+const categoryVersionSchema = mongoose.Schema(
   {
     user: {
       type: mongoose.Schema.Types.ObjectId,
@@ -13,7 +13,7 @@ const seqLabelVersionSchema = mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Article',
     },
-    annotations: [Annotation.schema],
+    categories: [Category.schema],
     status: {
       type: String,
       enum: Object.values(versionStatuses),
@@ -29,9 +29,9 @@ const seqLabelVersionSchema = mongoose.Schema(
   }
 );
 
-seqLabelVersionSchema.plugin(toJSON);
-seqLabelVersionSchema.plugin(paginate);
+categoryVersionSchema.plugin(toJSON);
+categoryVersionSchema.plugin(paginate);
 
-const SeqLabelVersion = mongoose.model('SeqLabelVersion', seqLabelVersionSchema);
+const CategoryVersion = mongoose.model('CategoryVersion', categoryVersionSchema);
 
-module.exports = SeqLabelVersion;
+module.exports = CategoryVersion;

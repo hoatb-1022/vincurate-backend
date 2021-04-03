@@ -22,6 +22,7 @@ router
 router.get('/:userId/articles', validate(userValidation.getUserArticles), userController.getUserArticles);
 router.get('/:userId/projects', validate(userValidation.getUserProjects), userController.getUserProjects);
 router.get('/:userId/labels', validate(userValidation.getUserLabels), userController.getUserLabels);
+router.get('/:userId/categories', validate(userValidation.getUserCategories), userController.getUserCategories);
 
 module.exports = router;
 

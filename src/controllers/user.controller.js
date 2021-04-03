@@ -72,6 +72,17 @@ const getUserLabels = catchAsync(async (req, res) => {
   res.send(labels);
 });
 
+const getUserCategories = catchAsync(async (req, res) => {
+  const { userId } = req.params;
+  const user = await userService.getUserById(userId);
+  if (!user) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
+  }
+
+  const categories = await userService.getUserCategories(userId);
+  res.send(categories);
+});
+
 module.exports = {
   createUser,
   getAllUsers,
@@ -82,4 +93,5 @@ module.exports = {
   getUserArticles,
   getUserProjects,
   getUserLabels,
+  getUserCategories,
 };

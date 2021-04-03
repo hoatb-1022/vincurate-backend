@@ -64,6 +64,12 @@ const getUserLabels = {
   }),
 };
 
+const getUserCategories = {
+  params: Joi.object().keys({
+    userId: Joi.string().custom(objectId),
+  }),
+};
+
 module.exports = {
   createUser,
   getUsers,
@@ -73,4 +79,5 @@ module.exports = {
   getUserArticles,
   getUserProjects,
   getUserLabels,
+  getUserCategories,
 };
