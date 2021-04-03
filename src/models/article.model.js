@@ -5,6 +5,7 @@ const User = require('./user.model');
 const Project = require('./project.model');
 const Annotation = require('./annotation.model');
 const Category = require('./category.model');
+const Translation = require('./translation.model');
 const { elasticClient } = require('../config/config');
 
 const articleSchema = mongoose.Schema(
@@ -20,6 +21,7 @@ const articleSchema = mongoose.Schema(
     content: { type: String, default: '', es_indexed: true },
     annotations: [Annotation.schema],
     categories: [Category.schema],
+    translation: Translation.schema,
     project: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Project',
@@ -36,6 +38,12 @@ const articleSchema = mongoose.Schema(
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'CategoryVersion',
+      },
+    ],
+    translationVersions: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'TranslationVersion',
       },
     ],
     lastCurator: {

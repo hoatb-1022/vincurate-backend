@@ -8,3 +8,4 @@ module.exports.categoryService = require('./category.service');
 module.exports.projectService = require('./project.service');
 module.exports.seqLabelVersionService = require('./seq-label-version.service');
 module.exports.categoryVersionService = require('./category-version.service');
+module.exports.translationVersionService = require('./translation-version.service');

@@ -7,6 +7,7 @@ const categoryRoute = require('./category.route');
 const projectRoute = require('./project.route');
 const seqLabelVersionRoute = require('./seq-label-version.route');
 const categoryVersionRoute = require('./category-version.route');
+const translationVersionRoute = require('./translation-version.route');
 const docsRoute = require('./docs.route');
 const config = require('../../config/config');
 
@@ -44,6 +45,10 @@ const defaultRoutes = [
   {
     path: '/category-versions',
     route: categoryVersionRoute,
+  },
+  {
+    path: '/translation-versions',
+    route: translationVersionRoute,
   },
 ];
 

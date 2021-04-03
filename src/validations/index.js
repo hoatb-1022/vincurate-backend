@@ -5,3 +5,4 @@ module.exports.seqLabelVersionValidation = require('./seq-label-version.validati
 module.exports.labelValidation = require('./label.validation');
 module.exports.categoryVersionValidation = require('./category-version.validation');
 module.exports.categoryValidation = require('./category.validation');
+module.exports.translationVersionValidation = require('./translation-version.validation');

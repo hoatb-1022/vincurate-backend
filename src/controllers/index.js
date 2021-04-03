@@ -6,3 +6,4 @@ module.exports.categoryController = require('./category.controller');
 module.exports.projectController = require('./project.controller');
 module.exports.seqLabelVersionController = require('./seq-label-version.controller');
 module.exports.categoryVersionController = require('./category-version.controller');
+module.exports.translationVersionController = require('./translation-version.controller');
