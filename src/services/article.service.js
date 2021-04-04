@@ -38,13 +38,14 @@ const uploadFile = async (user, projectId, files, method) => {
   }
 
   const { file } = files;
-  const { article, labels } = await articleHelper.importArticleFromFile(user, project, file, method);
+  const { article, labels, categories } = await articleHelper.importArticleFromFile(user, project, file, method);
   project.articles.push(article);
 
   await article.save();
   await user.save();
   await project.save();
   await labels.map((label) => label.save());
+  await categories.map((category) => category.save());
 
   return article;
 };

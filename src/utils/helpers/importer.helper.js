@@ -1,6 +1,7 @@
 const neatCsv = require('neat-csv');
-const { Article, Annotation, Label } = require('../../models');
+const { Article, Annotation, Label, Category, Translation } = require('../../models');
 const { getAllLabels } = require('../../services/label.service');
+const { getAllCategories } = require('../../services/category.service');
 const { convertCONLLToJSONL, convertPlainTextToJSONL } = require('./converter.helper');
 
 function generateArticleDescription(article) {
@@ -19,7 +20,7 @@ function generateArticleDescription(article) {
   return `${desc}...`;
 }
 
-async function importSequenceLabelByJSONL(user, project, data, options) {
+async function importArticleByJSONL(user, project, data, options) {
   const article = new Article();
   article.user = user.id;
   article.lastCurator = user.id;
@@ -27,44 +28,75 @@ async function importSequenceLabelByJSONL(user, project, data, options) {
 
   const nlabels = [];
   const allLabels = await getAllLabels();
+  const nCategories = [];
+  const allCategories = await getAllCategories();
   const sentences = [];
   let currentOffset = 0;
 
   // eslint-disable-next-line no-restricted-syntax
   for (const [index, line] of data.entries()) {
     const obj = typeof line === 'string' ? JSON.parse(line) : line;
-    const { text, labels } = obj;
+    const { text, labels, categories, translation } = obj;
     const articleSentence = options && options.formatter ? options.formatter(text) : text;
     sentences.push(articleSentence);
 
-    // eslint-disable-next-line no-restricted-syntax
-    for (const l of labels) {
-      const annotation = new Annotation();
-      const [offsetStart, offsetEnd, value] = l;
-      annotation.offsetStart = offsetStart + currentOffset + index;
-      annotation.offsetEnd = offsetEnd + currentOffset + index;
-      annotation.article = article.id;
-      annotation.user = user.id;
+    if (labels && labels.length) {
+      // eslint-disable-next-line no-restricted-syntax
+      for (const l of labels) {
+        const annotation = new Annotation();
+        const [offsetStart, offsetEnd, value] = l;
+        annotation.offsetStart = offsetStart + currentOffset + index;
+        annotation.offsetEnd = offsetEnd + currentOffset + index;
+        annotation.article = article.id;
+        annotation.user = user.id;
 
-      let label = allLabels.find((_l) => _l.value === value);
-      // eslint-disable-next-line no-await-in-loop
-      if (!label) label = await Label.findOne({ value }).exec();
-      if (!label) {
-        label = new Label();
-        label.value = value;
-        label.name = value; // TODO: Label real name?
-        label.color = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
-        label.creator = user.id;
+        let label = allLabels.find((_l) => _l.value === value);
+        // eslint-disable-next-line no-await-in-loop
+        if (!label) label = await Label.findOne({ value }).exec();
+        if (!label) {
+          label = new Label();
+          label.value = value;
+          label.name = value; // TODO: Label real name?
+          label.color = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
+          label.creator = user.id;
 
-        nlabels.push(label);
+          nlabels.push(label);
+        }
+
+        const labelProjIdx = project.labels.findIndex((l) => l.id === label.id);
+        if (labelProjIdx < 0) project.labels.push(label);
+
+        annotation.label = label;
+        allLabels.push(label);
+        article.annotations.push(annotation);
       }
+    }
 
-      const labelProjIdx = project.labels.findIndex((l) => l.id === label.id);
-      if (labelProjIdx < 0) project.labels.push(label);
+    if (categories && categories.length) {
+      // eslint-disable-next-line no-restricted-syntax
+      for (const c of categories) {
+        let category = allCategories.find((_l) => _l.value === c);
+        // eslint-disable-next-line no-await-in-loop
+        if (!category) category = await Label.findOne({ value: c }).exec();
+        if (!category) {
+          category = new Category();
+          category.value = c;
+          category.creator = user;
 
-      annotation.label = label;
-      allLabels.push(label);
-      article.annotations.push(annotation);
+          nCategories.push(category);
+        }
+
+        allCategories.push(category);
+        article.categories.push(category);
+      }
+    }
+
+    if (translation && translation.length) {
+      const nTranslation = new Translation();
+      nTranslation.content = translation;
+      nTranslation.creator = user;
+
+      article.translation = nTranslation;
     }
 
     currentOffset += articleSentence.length;
@@ -76,10 +108,11 @@ async function importSequenceLabelByJSONL(user, project, data, options) {
   return {
     article,
     labels: nlabels,
+    categories: nCategories,
   };
 }
 
-async function importSequenceLabelByCoNLL(user, project, data, options) {
+async function importArticleByCoNLL(user, project, data, options) {
   let headers = ['text', 'label'];
   let separator = '\t';
   let lineSeparator = () => {};
@@ -90,14 +123,14 @@ async function importSequenceLabelByCoNLL(user, project, data, options) {
 
   const rows = await neatCsv(data, { headers, separator });
   const jsonlData = convertCONLLToJSONL(rows, lineSeparator);
-  const result = await importSequenceLabelByJSONL(user, project, jsonlData, options);
+  const result = await importArticleByJSONL(user, project, jsonlData, options);
 
   return result;
 }
 
-async function importSequenceLabelByNER(user, project, data) {
+async function importArticleByNER(user, project, data) {
   const headers = ['senIndex', 'text', 'posTag', 'label', 'parent', 'relation'];
-  const result = await importSequenceLabelByCoNLL(user, project, data, {
+  const result = await importArticleByCoNLL(user, project, data, {
     headers,
     separator: ',',
     lineSeparator(row, rows, index) {
@@ -116,19 +149,19 @@ async function importSequenceLabelByNER(user, project, data) {
   return result;
 }
 
-async function importSequenceLabelByPlainText(user, project, data) {
+async function importArticleByPlainText(user, project, data) {
   const jsonlData = convertPlainTextToJSONL(data);
-  const result = await importSequenceLabelByJSONL(user, project, jsonlData);
+  const result = await importArticleByJSONL(user, project, jsonlData);
 
   return result;
 }
 
 const ImporterHelper = {
   generateArticleDescription,
-  importSequenceLabelByJSONL,
-  importSequenceLabelByCoNLL,
-  importSequenceLabelByNER,
-  importSequenceLabelByPlainText,
+  importArticleByJSONL,
+  importArticleByCoNLL,
+  importArticleByNER,
+  importArticleByPlainText,
 };
 
 module.exports = ImporterHelper;
