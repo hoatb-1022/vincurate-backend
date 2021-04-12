@@ -76,6 +76,17 @@ const updateArticleCategories = {
     .min(1),
 };
 
+const updateArticleTranslation = {
+  params: Joi.object().keys({
+    articleId: Joi.required().custom(objectId),
+  }),
+  body: Joi.object()
+    .keys({
+      translation: Joi.object(),
+    })
+    .min(1),
+};
+
 const createArticleSeqLabelVersion = {
   params: Joi.object().keys({
     articleId: Joi.required().custom(objectId),
@@ -98,6 +109,17 @@ const createArticleCategoryVersion = {
     .min(1),
 };
 
+const createArticleTranslationVersion = {
+  params: Joi.object().keys({
+    articleId: Joi.required().custom(objectId),
+  }),
+  body: Joi.object()
+    .keys({
+      translation: Joi.object(),
+    })
+    .min(1),
+};
+
 module.exports = {
   uploadFile,
   getArticle,
@@ -107,6 +129,8 @@ module.exports = {
   updateArticle,
   updateArticleAnnotations,
   updateArticleCategories,
+  updateArticleTranslation,
   createArticleSeqLabelVersion,
   createArticleCategoryVersion,
+  createArticleTranslationVersion,
 };

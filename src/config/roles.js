@@ -8,6 +8,7 @@ const userRights = [
   'getProjects',
   'manageSeqLabelVersions',
   'manageCategoryVersions',
+  'manageTranslationVersions',
   'manageLabels',
   'manageCategories',
 ];
@@ -19,5 +20,5 @@ roleRights.set(roles[1], adminRights);
 
 module.exports = {
   roles,
-  roleRights
+  roleRights,
 };

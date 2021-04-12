@@ -50,7 +50,6 @@ function convertCONLLToJSONL(data, lineSeparator) {
       if (jsonlLine.text.length) newData.push(jsonlLine);
       jsonlLine = {
         text: '',
-        labels: [],
       };
       currentType = 'O';
     }
@@ -67,7 +66,6 @@ function convertPlainTextToJSONL(data) {
     if (plainLine.length)
       newData.push({
         text: plainLine,
-        labels: [],
       });
   });
 

@@ -23,6 +23,11 @@ router.patch(
   validate(articleValidation.updateArticleCategories),
   articleController.updateArticleCategories
 );
+router.patch(
+  '/:articleId/update-translation',
+  validate(articleValidation.updateArticleTranslation),
+  articleController.updateArticleTranslation
+);
 router.post(
   '/:articleId/create-seq-label-version',
   auth('manageSeqLabelVersions'),
@@ -34,6 +39,12 @@ router.post(
   auth('manageCategoryVersions'),
   validate(articleValidation.createArticleCategoryVersion),
   articleController.createArticleCategoryVersion
+);
+router.post(
+  '/:articleId/create-translation-version',
+  auth('manageTranslationVersions'),
+  validate(articleValidation.createArticleTranslationVersion),
+  articleController.createArticleTranslationVersion
 );
 router.route('/upload').post(auth('uploadFile'), validate(articleValidation.uploadFile), articleController.uploadFile);
 router

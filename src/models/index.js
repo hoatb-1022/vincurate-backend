@@ -8,3 +8,5 @@ module.exports.ProjectRole = require('./project-role.model');
 module.exports.SeqLabelVersion = require('./seq-label-version.model');
 module.exports.Category = require('./category.model');
 module.exports.CategoryVersion = require('./category-version.model');
+module.exports.Translation = require('./translation.model');
+module.exports.TranslationVersion = require('./translation-version.model');

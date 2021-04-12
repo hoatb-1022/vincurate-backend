@@ -1,5 +1,5 @@
 const httpStatus = require('http-status');
-const { Article, SeqLabelVersion, CategoryVersion, User, Project } = require('../models');
+const { Article, SeqLabelVersion, CategoryVersion, TranslationVersion, User, Project } = require('../models');
 const { articleHelper } = require('../utils/helpers');
 const ApiError = require('../utils/ApiError');
 const projectService = require('./project.service');
@@ -38,13 +38,14 @@ const uploadFile = async (user, projectId, files, method) => {
   }
 
   const { file } = files;
-  const { article, labels } = await articleHelper.importArticleFromFile(user, project, file, method);
+  const { article, labels, categories } = await articleHelper.importArticleFromFile(user, project, file, method);
   project.articles.push(article);
 
   await article.save();
   await user.save();
   await project.save();
   await labels.map((label) => label.save());
+  await categories.map((category) => category.save());
 
   return article;
 };
@@ -55,6 +56,7 @@ const getArticleById = async (id) => {
     'project',
     'seqLabelVersions',
     'categoryVersions',
+    'translationVersions',
     'lastCurator',
   ]);
 
@@ -62,6 +64,8 @@ const getArticleById = async (id) => {
   for (const sl of article.seqLabelVersions) sl.user = await User.findById(sl.user);
   // eslint-disable-next-line no-restricted-syntax,no-await-in-loop
   for (const c of article.categoryVersions) c.user = await User.findById(c.user);
+  // eslint-disable-next-line no-restricted-syntax,no-await-in-loop
+  for (const t of article.translationVersions) t.user = await User.findById(t.user);
 
   return article;
 };
@@ -160,6 +164,18 @@ const updateArticleCategoriesById = async (user, articleId, { categories }) => {
   return article;
 };
 
+const updateArticleTranslationById = async (user, articleId, { translation }) => {
+  const article = await getArticleById(articleId);
+  if (!article) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Article not found');
+  }
+
+  article.translation = translation;
+
+  await article.save();
+  return article;
+};
+
 const createArticleSeqLabelVersionById = async (articleId, user, { annotations }) => {
   const article = await getArticleById(articleId);
   if (!article) {
@@ -194,6 +210,23 @@ const createArticleCategoryVersionById = async (articleId, user, { categories })
   return article;
 };
 
+const createArticleTranslationVersionById = async (articleId, user, { translation }) => {
+  const article = await getArticleById(articleId);
+  if (!article) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Article not found');
+  }
+
+  const translationVersion = new TranslationVersion();
+  translationVersion.user = user.id;
+  translationVersion.article = article.id;
+  translationVersion.translation = translation;
+  article.translationVersions.push(translationVersion.id);
+
+  await translationVersion.save();
+  await article.save();
+  return article;
+};
+
 module.exports = {
   queryArticles,
   uploadFile,
@@ -205,6 +238,8 @@ module.exports = {
   getNextArticleById,
   updateArticleAnnotationsById,
   updateArticleCategoriesById,
+  updateArticleTranslationById,
   createArticleSeqLabelVersionById,
   createArticleCategoryVersionById,
+  createArticleTranslationVersionById,
 };

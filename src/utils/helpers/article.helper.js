@@ -1,10 +1,10 @@
 const {
-  importSequenceLabelByJSONL,
-  importSequenceLabelByCoNLL,
-  importSequenceLabelByNER,
-  importSequenceLabelByPlainText,
+  importArticleByJSONL,
+  importArticleByCoNLL,
+  importArticleByNER,
+  importArticleByPlainText,
 } = require('./importer.helper');
-const { exportSequenceLabelInJSONL } = require('./exporter.helper');
+const { exportArticleInJSONL } = require('./exporter.helper');
 
 async function importArticleFromFile(user, project, file, method) {
   const data = file.data.toString('utf-8');
@@ -12,18 +12,18 @@ async function importArticleFromFile(user, project, file, method) {
   let result;
 
   switch (method) {
-    case 'SL_CONLL':
-      result = await importSequenceLabelByCoNLL(user, project, data);
+    case 'FORMAT_CONLL':
+      result = await importArticleByCoNLL(user, project, data);
       break;
-    case 'SL_PLAIN':
-      result = await importSequenceLabelByPlainText(user, project, dataSplited);
+    case 'FORMAT_PLAIN':
+      result = await importArticleByPlainText(user, project, dataSplited);
       break;
-    case 'SL_JSONL':
-      result = await importSequenceLabelByJSONL(user, project, dataSplited);
+    case 'FORMAT_JSONL':
+      result = await importArticleByJSONL(user, project, dataSplited);
       break;
-    case 'SL_NER':
+    case 'FORMAT_NER':
     default:
-      result = await importSequenceLabelByNER(user, project, data);
+      result = await importArticleByNER(user, project, data);
       break;
   }
 
@@ -38,9 +38,9 @@ async function exportArticleInFile(article, method) {
   };
 
   switch (method) {
-    case 'SL_JSONL':
+    case 'FORMAT_JSONL':
     default:
-      result.data = await exportSequenceLabelInJSONL(article);
+      result.data = await exportArticleInJSONL(article);
       result.contentType = 'text/plain';
       result.suffix = 'json';
       break;
