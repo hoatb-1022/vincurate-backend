@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const { toJSON, paginate } = require('./plugins');
 const ProjectRole = require('./project-role.model');
+const { projectTypes } = require('../config/projects');
 
 const projectSchema = mongoose.Schema(
   {
@@ -29,6 +30,12 @@ const projectSchema = mongoose.Schema(
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Category',
+      },
+    ],
+    types: [
+      {
+        type: String,
+        enum: Object.values(projectTypes),
       },
     ],
   },

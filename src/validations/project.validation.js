@@ -13,6 +13,7 @@ const createProject = {
     ),
     labels: Joi.array().items(Joi.string().custom(objectId)),
     categories: Joi.array().items(Joi.string().custom(objectId)),
+    types: Joi.array().items(Joi.string()).required(),
   }),
 };
 
@@ -46,6 +47,7 @@ const updateProject = {
     ),
     labels: Joi.array().items(Joi.string().custom(objectId)),
     categories: Joi.array().items(Joi.string().custom(objectId)),
+    types: Joi.array().items(Joi.string()).required(),
   }),
 };
 
