@@ -4,6 +4,7 @@ module.exports.tokenService = require('./token.service');
 module.exports.userService = require('./user.service');
 module.exports.articleService = require('./article.service');
 module.exports.labelService = require('./label.service');
+module.exports.labelSetService = require('./label-set.service');
 module.exports.categoryService = require('./category.service');
 module.exports.projectService = require('./project.service');
 module.exports.seqLabelVersionService = require('./seq-label-version.service');

@@ -10,6 +10,7 @@ const userRights = [
   'manageCategoryVersions',
   'manageTranslationVersions',
   'manageLabels',
+  'manageLabelSets',
   'manageCategories',
 ];
 const adminRights = [...userRights, 'manageUsers'];
