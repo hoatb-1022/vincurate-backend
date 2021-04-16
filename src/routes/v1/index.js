@@ -3,6 +3,7 @@ const authRoute = require('./auth.route');
 const userRoute = require('./user.route');
 const articleRoute = require('./article.route');
 const labelRoute = require('./label.route');
+const labelSetRoute = require('./label-set.route');
 const categoryRoute = require('./category.route');
 const projectRoute = require('./project.route');
 const seqLabelVersionRoute = require('./seq-label-version.route');
@@ -29,6 +30,10 @@ const defaultRoutes = [
   {
     path: '/labels',
     route: labelRoute,
+  },
+  {
+    path: '/label-sets',
+    route: labelSetRoute,
   },
   {
     path: '/categories',

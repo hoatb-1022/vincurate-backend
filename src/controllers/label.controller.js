@@ -22,8 +22,8 @@ const getLabel = catchAsync(async (req, res) => {
 });
 
 const createLabel = catchAsync(async (req, res) => {
-  const project = await labelService.createLabel(req.user, req.body);
-  res.status(httpStatus.CREATED).send(project);
+  const label = await labelService.createLabel(req.user, req.body);
+  res.status(httpStatus.CREATED).send(label);
 });
 
 const updateLabel = catchAsync(async (req, res) => {
