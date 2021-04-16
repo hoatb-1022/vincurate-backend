@@ -63,7 +63,7 @@ const getUserLabels = async (userId) => {
 };
 
 const getUserLabelSets = async (userId) => {
-  return LabelSet.find({ creator: userId }).populate('creator');
+  return LabelSet.find({ creator: userId }).populate(['creator', 'labels']);
 };
 
 const getUserCategories = async (userId) => {
