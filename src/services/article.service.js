@@ -54,6 +54,7 @@ const getArticleById = async (id) => {
   const article = await Article.findById(id).populate([
     'user',
     'project',
+    'project.owner',
     'seqLabelVersions',
     'categoryVersions',
     'translationVersions',
@@ -66,6 +67,7 @@ const getArticleById = async (id) => {
   for (const c of article.categoryVersions) c.user = await User.findById(c.user);
   // eslint-disable-next-line no-restricted-syntax,no-await-in-loop
   for (const t of article.translationVersions) t.user = await User.findById(t.user);
+  article.project.owner = await User.findById(article.project.owner);
 
   return article;
 };

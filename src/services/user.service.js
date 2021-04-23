@@ -1,6 +1,7 @@
 const httpStatus = require('http-status');
-const { User, Label, LabelSet, Article, Category } = require('../models');
+const { User, Label, LabelSet, Article, Category, Project } = require('../models');
 const ApiError = require('../utils/ApiError');
+const articleServices = require('./article.service');
 
 const createUser = async (userBody) => {
   if (await User.isEmailTaken(userBody.email)) {
@@ -50,12 +51,23 @@ const deleteUserById = async (userId) => {
   return user;
 };
 
-const getUserArticles = async (userId) => {
-  return Article.find({ user: userId }).populate(['user', 'project']);
+const getUserProjects = async (userId) => {
+  return Project.find({ $or: [{ owner: userId }, { 'roles.user': userId }] }).populate(['owner', 'roles.user']);
 };
 
-const getUserProjects = async (userId) => {
-  return User.findById(userId).populate('projects');
+const getUserArticles = async (userId) => {
+  const projects = await getUserProjects(userId);
+  const articles = [];
+  // eslint-disable-next-line no-restricted-syntax
+  for (const project of projects) {
+    // eslint-disable-next-line no-restricted-syntax
+    for (const art of project.articles) {
+      // eslint-disable-next-line no-await-in-loop
+      const article = await articleServices.getArticleById(art);
+      articles.push(article);
+    }
+  }
+  return articles;
 };
 
 const getUserLabels = async (userId) => {

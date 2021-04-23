@@ -57,7 +57,7 @@ const getUserProjects = catchAsync(async (req, res) => {
     throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
   }
 
-  const { projects } = await userService.getUserProjects(userId);
+  const projects = await userService.getUserProjects(userId);
   res.send(projects);
 });
 
