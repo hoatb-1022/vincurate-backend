@@ -42,9 +42,10 @@ app.set('trust proxy', '8.8.8.8');
 app.use(
   bodyParser.urlencoded({
     extended: true,
+    limit: '50mb',
   })
 );
-app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: '50mb' }));
 app.use(
   fileUpload({
     createParentPath: true,
