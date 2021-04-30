@@ -95,6 +95,7 @@ const createArticle = async (user, articleBody) => {
     project,
     ...articleBody,
   });
+  importerHelper.generateArticleDescription(article);
 
   project.articles.push(article.id);
   await project.save();

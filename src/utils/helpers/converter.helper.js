@@ -45,11 +45,12 @@ function convertCONLLToJSONL(data, lineSeparator) {
       if (isEndOfData && currentType !== 'O') jsonlLine.labels.push([offsetStart, jsonlLine.text.length, currentType]);
     }
 
-    // When reach line seperator/end of sentence/end of data
+    // When reach line separator/end of sentence/end of data
     if (!isGoodCollData || lineSeparator(conllLine, data, index) || isEndOfData) {
       if (jsonlLine.text.length) newData.push(jsonlLine);
       jsonlLine = {
         text: '',
+        labels: [],
       };
       currentType = 'O';
     }

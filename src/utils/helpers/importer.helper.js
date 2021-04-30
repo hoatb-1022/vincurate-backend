@@ -25,6 +25,7 @@ async function importArticleByJSONL(user, project, data, options) {
   article.user = user.id;
   article.lastCurator = user.id;
   article.project = project.id;
+  article.title = `Article #${article.id.substring(article.id.length - 5).toUpperCase()}`;
 
   const nlabels = [];
   const allLabels = await getAllLabels();

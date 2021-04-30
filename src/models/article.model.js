@@ -10,7 +10,7 @@ const { elasticClient } = require('../config/config');
 
 const articleSchema = mongoose.Schema(
   {
-    title: { type: String, default: '', es_indexed: true },
+    title: { type: String, default: '', required: true, trim: true, es_indexed: true },
     description: { type: String, default: '', es_indexed: true },
     user: {
       type: mongoose.Schema.Types.ObjectId,
