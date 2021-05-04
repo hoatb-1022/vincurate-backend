@@ -118,6 +118,15 @@ const createArticleTranslationVersion = catchAsync(async (req, res) => {
   res.send(article);
 });
 
+const getArticleLabelingSuggestions = catchAsync(async (req, res) => {
+  const {
+    user,
+    params: { articleId },
+  } = req;
+  const article = await articleService.getArticleLabelingSuggestions(articleId, user);
+  res.send(article);
+});
+
 module.exports = {
   getArticles,
   uploadFile,
@@ -133,4 +142,5 @@ module.exports = {
   createArticleSeqLabelVersion,
   createArticleCategoryVersion,
   createArticleTranslationVersion,
+  getArticleLabelingSuggestions,
 };

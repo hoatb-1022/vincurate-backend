@@ -12,19 +12,28 @@ router
   .get(validate(articleValidation.getArticles), articleController.getArticles);
 
 router.get('/:articleId/next', validate(articleValidation.getArticle), articleController.getNextArticle);
+router.get(
+  '/:articleId/labeling-suggestions',
+  auth('manageArticles'),
+  validate(articleValidation.getArticle),
+  articleController.getArticleLabelingSuggestions
+);
 router.get('/:articleId/export', validate(articleValidation.getArticle), articleController.exportArticle);
 router.patch(
   '/:articleId/update-annotations',
+  auth('manageArticles'),
   validate(articleValidation.updateArticleAnnotations),
   articleController.updateArticleAnnotations
 );
 router.patch(
   '/:articleId/update-categories',
+  auth('manageArticles'),
   validate(articleValidation.updateArticleCategories),
   articleController.updateArticleCategories
 );
 router.patch(
   '/:articleId/update-translation',
+  auth('manageArticles'),
   validate(articleValidation.updateArticleTranslation),
   articleController.updateArticleTranslation
 );
