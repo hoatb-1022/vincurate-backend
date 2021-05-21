@@ -1,8 +1,9 @@
 const neatCsv = require('neat-csv');
+const { randomHexColor } = require('random-hex-color-generator');
 const { Article, Annotation, Label, Category, Translation } = require('../../models');
 const { getAllLabels } = require('../../services/label.service');
 const { getAllCategories } = require('../../services/category.service');
-const { convertCONLLToJSONL, convertPlainTextToJSONL } = require('./converter.helper');
+const { convertCONLLToJSONL, convertPlainTextToJSONL, convertMLDataToCONLL } = require('./converter.helper');
 
 function generateArticleDescription(article) {
   const limitCharacter = 250;
@@ -58,7 +59,7 @@ async function importArticleByJSONL(user, project, data, options) {
           label = new Label();
           label.value = value;
           label.name = value; // TODO: Label real name?
-          label.color = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
+          label.color = randomHexColor();
           label.creator = user.id;
 
           nlabels.push(label);
@@ -150,6 +151,13 @@ async function importArticleByNER(user, project, data) {
   return result;
 }
 
+async function importArticleByMLData(user, project, data) {
+  const conllData = convertMLDataToCONLL(data);
+  const result = await importArticleByCoNLL(user, project, conllData);
+
+  return result;
+}
+
 async function importArticleByPlainText(user, project, data) {
   const jsonlData = convertPlainTextToJSONL(data);
   const result = await importArticleByJSONL(user, project, jsonlData);
@@ -162,6 +170,7 @@ const ImporterHelper = {
   importArticleByJSONL,
   importArticleByCoNLL,
   importArticleByNER,
+  importArticleByMLData,
   importArticleByPlainText,
 };
 

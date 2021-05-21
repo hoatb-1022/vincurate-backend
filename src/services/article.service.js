@@ -1,20 +1,11 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
 const httpStatus = require('http-status');
-const sample = require('lodash/sample');
-const random = require('lodash/random');
-const {
-  Article,
-  SeqLabelVersion,
-  CategoryVersion,
-  TranslationVersion,
-  User,
-  Project,
-  Label,
-  Annotation,
-} = require('../models');
+const { Article, SeqLabelVersion, CategoryVersion, TranslationVersion, User, Project } = require('../models');
 const { articleHelper } = require('../utils/helpers');
 const ApiError = require('../utils/ApiError');
 const projectService = require('./project.service');
 const importerHelper = require('../utils/helpers/importer.helper');
+const ml = require('../utils/helpers/ml.helper');
 
 const queryArticles = async ({ query: { q, fields, per, page, order } }) => {
   const query = !q || !q.length ? '*' : q;
@@ -247,31 +238,9 @@ const getArticleLabelingSuggestions = async (articleId, user) => {
     throw new ApiError(httpStatus.NOT_FOUND, 'Article not found');
   }
 
-  // Random suggestions for testing
-  const labels = await Label.find({});
-  const annotation = new Annotation();
-  annotation.user = user.id;
-  annotation.article = article.id;
-  annotation.offsetStart = random(0, Math.floor(article.content.length / 2) - 5);
-  annotation.offsetEnd = annotation.offsetStart + 5;
-  annotation.label = sample(labels);
+  const suggestions = await ml.doSuggestions(article, user);
 
-  const annotation1 = new Annotation();
-  annotation1.user = user.id;
-  annotation1.article = article.id;
-  annotation1.offsetStart = annotation.offsetEnd;
-  annotation1.offsetEnd = annotation1.offsetStart + 5;
-  annotation1.label = sample(labels);
-
-  const annotation2 = new Annotation();
-  annotation2.user = user.id;
-  annotation1.article = article.id;
-  annotation2.offsetStart = annotation1.offsetEnd;
-  annotation2.offsetEnd = annotation2.offsetStart + 5;
-  annotation2.label = sample(labels);
-
-  article.annotations = [annotation, annotation1, annotation2];
-  return article;
+  return suggestions;
 };
 
 module.exports = {

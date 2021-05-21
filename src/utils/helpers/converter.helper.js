@@ -73,9 +73,19 @@ function convertPlainTextToJSONL(data) {
   return newData;
 }
 
+function convertMLDataToCONLL(data) {
+  const lines = [];
+  data.forEach((item) => {
+    lines.push(`${item.form}\t${item.nerLabel}`);
+  });
+
+  return lines.join('\n');
+}
+
 const ConverterHelper = {
   convertCONLLToJSONL,
   convertPlainTextToJSONL,
+  convertMLDataToCONLL,
 };
 
 module.exports = ConverterHelper;
