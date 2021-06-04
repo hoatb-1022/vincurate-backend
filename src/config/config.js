@@ -25,8 +25,6 @@ const envVarsSchema = Joi.object()
 
 const { value: envVars, error } = envVarsSchema.prefs({ errors: { label: 'key' } }).validate(process.env);
 
-console.log(envVars.ELASTICSEARCH_AUTH);
-
 const elasticClient = new Client({
   host: envVars.ELASTICSEARCH_HOST,
   auth: envVars.ELASTICSEARCH_AUTH,

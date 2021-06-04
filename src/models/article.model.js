@@ -61,8 +61,6 @@ const articleSchema = mongoose.Schema(
 
 articleSchema.plugin(toJSON);
 articleSchema.plugin(paginate);
-
-console.log(elasticClient);
 articleSchema.plugin(mongoosastic, {
   esClient: elasticClient,
   populate: [
